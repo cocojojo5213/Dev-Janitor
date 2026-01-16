@@ -32,7 +32,8 @@
     "next": "Next",
     "previous": "Previous",
     "noData": "No data available",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "reset": "Reset"
   },
   "nav": {
     "tools": "Tools",
@@ -198,7 +199,24 @@
     "updateAvailable": "Update available",
     "general": "General",
     "appearance": "Appearance",
-    "advanced": "Advanced"
+    "advanced": "Advanced",
+    "aiConfig": "AI Assistant Config",
+    "aiConfigInfo": "AI Features Info",
+    "aiConfigDesc1": "Local analysis is free forever, no API key required.",
+    "aiConfigDesc2": "Configure API key to enable AI deep analysis for smarter suggestions.",
+    "enableAI": "Enable AI Enhancement",
+    "aiProvider": "AI Provider",
+    "aiProviderTooltip": "Select AI service provider",
+    "apiKey": "API Key",
+    "apiKeyTooltip": "Get API Key from OpenAI website",
+    "apiKeyRequired": "API Key is required to enable AI features",
+    "aiModel": "AI Model",
+    "aiModelTooltip": "Select AI model to use",
+    "aiConfigSaved": "Configuration Saved",
+    "aiConfigSavedDesc": "AI assistant configuration updated. You can now use AI enhancement features.",
+    "helpLinks": "Help Links",
+    "getOpenAIKey": "Get OpenAI API Key",
+    "viewModels": "View Available Models"
   },
   "errors": {
     "detectionFailed": "Failed to detect tools",

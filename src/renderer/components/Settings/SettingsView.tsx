@@ -16,10 +16,12 @@ import {
   SettingOutlined,
   InfoCircleOutlined,
   BgColorsOutlined,
+  RobotOutlined,
 } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { LanguageCard } from './LanguageSelector'
 import { AboutSection } from './AboutSection'
+import { AIConfigSection } from './AIConfigSection'
 
 const { Title, Text } = Typography
 
@@ -86,6 +88,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className = '' }) =>
         </Space>
       ),
       children: <GeneralSettings />,
+    },
+    {
+      key: 'ai',
+      label: (
+        <Space>
+          <RobotOutlined />
+          {t('settings.aiConfig', 'AI 助手')}
+        </Space>
+      ),
+      children: <AIConfigSection />,
     },
     {
       key: 'about',

@@ -32,7 +32,8 @@
     "next": "下一步",
     "previous": "上一步",
     "noData": "暂无数据",
-    "unknown": "未知"
+    "unknown": "未知",
+    "reset": "重置"
   },
   "nav": {
     "tools": "工具",
@@ -198,7 +199,24 @@
     "updateAvailable": "有可用更新",
     "general": "通用",
     "appearance": "外观",
-    "advanced": "高级"
+    "advanced": "高级",
+    "aiConfig": "AI 助手配置",
+    "aiConfigInfo": "AI 功能说明",
+    "aiConfigDesc1": "本地分析功能永久免费，无需配置 API Key。",
+    "aiConfigDesc2": "配置 API Key 后可启用 AI 深度分析功能，获得更智能的建议。",
+    "enableAI": "启用 AI 增强功能",
+    "aiProvider": "AI 提供商",
+    "aiProviderTooltip": "选择 AI 服务提供商",
+    "apiKey": "API Key",
+    "apiKeyTooltip": "从 OpenAI 官网获取 API Key",
+    "apiKeyRequired": "启用 AI 功能需要配置 API Key",
+    "aiModel": "AI 模型",
+    "aiModelTooltip": "选择使用的 AI 模型",
+    "aiConfigSaved": "配置已保存",
+    "aiConfigSavedDesc": "AI 助手配置已更新，现在可以使用 AI 增强功能了。",
+    "helpLinks": "帮助链接",
+    "getOpenAIKey": "获取 OpenAI API Key",
+    "viewModels": "查看可用模型"
   },
   "errors": {
     "detectionFailed": "工具检测失败",

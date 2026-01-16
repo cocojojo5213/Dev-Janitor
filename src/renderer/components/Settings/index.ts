@@ -7,3 +7,4 @@
 export * from './SettingsView'
 export * from './LanguageSelector'
 export * from './AboutSection'
+export * from './AIConfigSection'
