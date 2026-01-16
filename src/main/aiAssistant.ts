@@ -67,14 +67,23 @@ export class LocalAnalyzer {
     const nodeInfo = tools.find(t => t.name === 'node')
     if (nodeInfo?.isInstalled && nodeInfo.version) {
       const majorVersion = parseInt(nodeInfo.version.split('.')[0])
-      if (majorVersion < 18) {
+      if (majorVersion < 20) {
         issues.push({
           severity: 'warning',
           category: 'version',
           title: 'Node.js 版本过旧',
-          description: `当前版本 ${nodeInfo.version}，建议升级到 Node.js 18 LTS 或更高版本以获得更好的性能和安全性。`,
+          description: `当前版本 ${nodeInfo.version}，建议升级到 Node.js 20 LTS 或更高版本（Node.js 22 LTS 已于 2024 年 10 月发布）以获得更好的性能和安全性。`,
           affectedTools: ['node'],
-          solution: '访问 https://nodejs.org 下载最新 LTS 版本'
+          solution: '访问 https://nodejs.org 下载最新 LTS 版本（推荐 Node.js 22 LTS）'
+        })
+      } else if (majorVersion < 22) {
+        issues.push({
+          severity: 'info',
+          category: 'version',
+          title: 'Node.js 可以升级',
+          description: `当前版本 ${nodeInfo.version}，Node.js 22 LTS 已发布，建议升级以获得最新特性。`,
+          affectedTools: ['node'],
+          solution: '访问 https://nodejs.org 下载 Node.js 22 LTS'
         })
       }
     }
@@ -104,9 +113,9 @@ export class LocalAnalyzer {
           severity: 'critical',
           category: 'version',
           title: 'Python 2 已停止支持',
-          description: 'Python 2 已于 2020 年停止维护，强烈建议升级到 Python 3。',
+          description: 'Python 2 已于 2020 年停止维护（已过去 6 年），强烈建议升级到 Python 3.12 或更高版本。',
           affectedTools: ['python'],
-          solution: '访问 https://www.python.org 下载 Python 3'
+          solution: '访问 https://www.python.org 下载 Python 3.12+'
         })
       }
     }
@@ -193,14 +202,37 @@ export class LocalAnalyzer {
       })
     }
     
+    // Suggest pnpm as alternative
+    if (hasNode && !hasPnpm) {
+      suggestions.push({
+        type: 'install',
+        title: '安装 pnpm',
+        description: 'pnpm 是更快、更节省磁盘空间的包管理器',
+        command: 'npm install -g pnpm',
+        priority: 'low'
+      })
+    }
+    
     // Suggest Docker if not installed
     const hasDocker = tools.find(t => t.name === 'docker')?.isInstalled
     if (!hasDocker) {
       suggestions.push({
         type: 'install',
         title: '安装 Docker',
-        description: 'Docker 是现代开发的必备工具，用于容器化应用',
+        description: 'Docker 是现代开发的必备工具，用于容器化应用。请访问 https://docker.com 下载 Docker Desktop',
         priority: 'medium'
+      })
+    }
+
+    // Check for outdated global npm packages
+    const outdatedNpmPackages = packages.filter(p => p.manager === 'npm')
+    if (outdatedNpmPackages.length > 0) {
+      suggestions.push({
+        type: 'update',
+        title: '更新全局 npm 包',
+        description: '检查并更新所有过时的全局 npm 包',
+        command: 'npm update -g',
+        priority: 'low'
       })
     }
     
@@ -277,25 +309,44 @@ export class AIAnalyzer {
     environment: EnvironmentVariable[],
     services: RunningService[]
   ): string {
-    return `作为一个开发环境专家，请分析以下开发环境并提供建议：
+    const currentDate = new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+    
+    return `当前日期: ${currentDate}
+
+作为一个开发环境专家，请基于 2026 年 1 月的最新技术标准分析以下开发环境并提供建议：
 
 已安装的工具:
-${tools.filter(t => t.isInstalled).map(t => `- ${t.displayName}: ${t.version}`).join('\n')}
+${tools.filter(t => t.isInstalled).map(t => `- ${t.displayName}: ${t.version} (路径: ${t.path || '未知'})`).join('\n')}
+
+未安装的工具:
+${tools.filter(t => !t.isInstalled).map(t => `- ${t.displayName}`).join('\n') || '无'}
 
 全局包 (前10个):
-${packages.slice(0, 10).map(p => `- ${p.name}@${p.version}`).join('\n')}
+${packages.slice(0, 10).map(p => `- ${p.name}@${p.version} (${p.manager})`).join('\n')}
 
 运行中的服务: ${services.length} 个
 
 环境变量: ${environment.length} 个
 
-请提供:
-1. 环境健康度评估
-2. 潜在问题和风险
-3. 优化建议
-4. 最佳实践建议
+请提供详细分析，包括：
 
-请用中文回答，简洁明了。`
+1. **环境健康度评估**（基于 2026 年的最新标准，给出评分 1-10）
+
+2. **版本问题检查**：
+   - Node.js 22 LTS 是当前推荐版本
+   - Python 3.12+ 是推荐版本
+   - 检查是否有过时的工具版本
+
+3. **具体优化建议**（每条建议请包含可执行的命令）：
+   - 如果需要更新，提供更新命令（如 npm update -g xxx）
+   - 如果需要安装，提供安装命令或下载链接
+   - 如果有配置问题，提供解决步骤
+
+4. **安全建议**：
+   - 检查是否有已知安全漏洞的版本
+   - 提供修复命令
+
+请用中文回答，格式清晰，每条建议都要有具体的操作命令或链接。`
   }
   
   /**
@@ -313,31 +364,45 @@ ${packages.slice(0, 10).map(p => `- ${p.name}@${p.version}`).join('\n')}
    * Call OpenAI API
    */
   private async callOpenAI(prompt: string): Promise<string> {
+    const model = this.config.model || 'gpt-5'
+    const isGPT5 = model.startsWith('gpt-5')
+    const isO3OrO4 = model.startsWith('o3') || model.startsWith('o4')
+    
+    // Build request body based on model type
+    const requestBody: Record<string, unknown> = {
+      model,
+      messages: [
+        {
+          role: 'system',
+          content: `你是一个专业的开发环境顾问，帮助开发者优化他们的开发环境。当前日期是 ${new Date().toISOString().split('T')[0]}。请基于 2026 年 1 月的最新技术标准提供建议。`
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ]
+    }
+    
+    // GPT-5 and o-series use max_completion_tokens instead of max_tokens
+    if (isGPT5 || isO3OrO4) {
+      requestBody.max_completion_tokens = 2000
+    } else {
+      requestBody.max_tokens = 2000
+      requestBody.temperature = 0.7
+    }
+    
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.config.apiKey}`
       },
-      body: JSON.stringify({
-        model: this.config.model || 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: '你是一个专业的开发环境顾问，帮助开发者优化他们的开发环境。'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 1000
-      })
+      body: JSON.stringify(requestBody)
     })
     
     if (!response.ok) {
-      throw new Error(`OpenAI API 错误: ${response.statusText}`)
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(`OpenAI API 错误: ${response.statusText}${errorData.error?.message ? ` - ${errorData.error.message}` : ''}`)
     }
     
     const data = await response.json()

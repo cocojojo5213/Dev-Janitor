@@ -21,8 +21,6 @@ import {
   MoreOutlined,
   EyeOutlined,
   SyncOutlined,
-  DeleteOutlined,
-  FolderOpenOutlined,
   CopyOutlined,
 } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
@@ -93,8 +91,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, onRefresh, onViewDetails }) =
     }
   }
 
-  // Build action menu items based on tool state
-  // Validates: Property 8 - Action Menu Completeness
+  // Build action menu items - simplified, only safe operations
   const actionMenuItems = [
     {
       key: 'details',
@@ -104,48 +101,14 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, onRefresh, onViewDetails }) =
     },
   ]
 
-  // Add update option if tool is installed and updatable
-  if (tool.isInstalled && tool.installMethod) {
-    actionMenuItems.push({
-      key: 'update',
-      icon: <SyncOutlined />,
-      label: t('tools.update'),
-      onClick: () => {
-        message.info('Update functionality coming soon')
-      },
-    })
-  }
-
-  // Add uninstall option if tool is installed
-  if (tool.isInstalled && tool.installMethod) {
-    actionMenuItems.push({
-      key: 'uninstall',
-      icon: <DeleteOutlined />,
-      label: t('tools.uninstall'),
-      onClick: () => {
-        message.info('Uninstall functionality coming soon')
-      },
-    })
-  }
-
-  // Add path-related actions if path is available
+  // Add copy path if path is available
   if (tool.path) {
-    actionMenuItems.push(
-      {
-        key: 'openLocation',
-        icon: <FolderOpenOutlined />,
-        label: t('tools.openLocation'),
-        onClick: () => {
-          message.info('Open location functionality coming soon')
-        },
-      },
-      {
-        key: 'copyPath',
-        icon: <CopyOutlined />,
-        label: t('tools.copyPath'),
-        onClick: handleCopyPath,
-      }
-    )
+    actionMenuItems.push({
+      key: 'copyPath',
+      icon: <CopyOutlined />,
+      label: t('tools.copyPath'),
+      onClick: handleCopyPath,
+    })
   }
 
   return (

@@ -12,12 +12,13 @@
  * Validates: Requirements 1.1, 3.1, 4.1, 10.1, 11.1
  */
 
-import { ipcMain, BrowserWindow } from 'electron'
+import { ipcMain, BrowserWindow, shell } from 'electron'
 import { detectionEngine } from './detectionEngine'
 import { packageManager } from './packageManager'
 import { serviceMonitor } from './serviceMonitor'
 import { environmentScanner } from './environmentScanner'
 import { aiAssistant } from './aiAssistant'
+import { commandExecutor } from './commandExecutor'
 import type { ToolInfo, PackageInfo, RunningService, EnvironmentVariable, AnalysisResult, AIConfig } from '../shared/types'
 
 // Store for language preference
@@ -155,6 +156,46 @@ function registerPackagesHandlers(): void {
       return false
     }
   })
+
+  // Check npm package latest version from registry
+  ipcMain.handle('packages:check-npm-latest', async (_event, packageName: string): Promise<{ name: string; latest: string } | null> => {
+    try {
+      const response = await fetch(`https://registry.npmjs.org/${packageName}/latest`, {
+        headers: { 'Accept': 'application/json' }
+      })
+      if (!response.ok) {
+        return null
+      }
+      const data = await response.json()
+      return {
+        name: packageName,
+        latest: data.version
+      }
+    } catch (error) {
+      console.error(`Error checking latest version for ${packageName}:`, error)
+      return null
+    }
+  })
+
+  // Check pip package latest version from PyPI
+  ipcMain.handle('packages:check-pip-latest', async (_event, packageName: string): Promise<{ name: string; latest: string } | null> => {
+    try {
+      const response = await fetch(`https://pypi.org/pypi/${packageName}/json`, {
+        headers: { 'Accept': 'application/json' }
+      })
+      if (!response.ok) {
+        return null
+      }
+      const data = await response.json()
+      return {
+        name: packageName,
+        latest: data.info?.version || null
+      }
+    } catch (error) {
+      console.error(`Error checking latest version for ${packageName}:`, error)
+      return null
+    }
+  })
 }
 
 /**
@@ -280,6 +321,50 @@ function registerAIHandlers(): void {
 }
 
 /**
+ * Register all IPC handlers for shell operations
+ */
+function registerShellHandlers(): void {
+  // Open a path in file explorer
+  ipcMain.handle('shell:open-path', async (_event, path: string): Promise<string> => {
+    try {
+      return await shell.openPath(path)
+    } catch (error) {
+      console.error('Error opening path:', error)
+      return error instanceof Error ? error.message : 'Unknown error'
+    }
+  })
+
+  // Open external URL in default browser
+  ipcMain.handle('shell:open-external', async (_event, url: string): Promise<void> => {
+    try {
+      await shell.openExternal(url)
+    } catch (error) {
+      console.error('Error opening external URL:', error)
+      throw error
+    }
+  })
+
+  // Execute a shell command
+  ipcMain.handle('shell:execute-command', async (_event, command: string): Promise<{ success: boolean; stdout: string; stderr: string }> => {
+    try {
+      const result = await commandExecutor.execute(command, { timeout: 60000 }) // 60 second timeout
+      return {
+        success: result.success,
+        stdout: result.stdout,
+        stderr: result.stderr
+      }
+    } catch (error) {
+      console.error('Error executing command:', error)
+      return {
+        success: false,
+        stdout: '',
+        stderr: error instanceof Error ? error.message : 'Unknown error'
+      }
+    }
+  })
+}
+
+/**
  * Start service monitoring and send updates to renderer
  * 
  * Validates: Requirement 11.6 (refresh every 5 seconds)
@@ -328,6 +413,7 @@ export function registerAllIPCHandlers(): void {
   registerEnvironmentHandlers()
   registerSettingsHandlers()
   registerAIHandlers()
+  registerShellHandlers()
   
   // Start service monitoring
   startServiceMonitoring()
@@ -351,6 +437,8 @@ export function cleanupIPCHandlers(): void {
   ipcMain.removeHandler('packages:list-cargo')
   ipcMain.removeHandler('packages:list-gem')
   ipcMain.removeHandler('packages:uninstall')
+  ipcMain.removeHandler('packages:check-npm-latest')
+  ipcMain.removeHandler('packages:check-pip-latest')
   ipcMain.removeHandler('services:list')
   ipcMain.removeHandler('services:kill')
   ipcMain.removeHandler('env:get-all')
@@ -359,6 +447,9 @@ export function cleanupIPCHandlers(): void {
   ipcMain.removeHandler('settings:set-language')
   ipcMain.removeHandler('ai:analyze')
   ipcMain.removeHandler('ai:update-config')
+  ipcMain.removeHandler('shell:open-path')
+  ipcMain.removeHandler('shell:open-external')
+  ipcMain.removeHandler('shell:execute-command')
   
   console.log('All IPC handlers cleaned up')
 }

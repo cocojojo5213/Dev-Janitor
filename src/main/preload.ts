@@ -34,6 +34,8 @@ interface ElectronAPI {
     listCargo: () => Promise<PackageInfo[]>
     listGem: () => Promise<PackageInfo[]>
     uninstall: (name: string, manager: string) => Promise<boolean>
+    checkNpmLatestVersion: (packageName: string) => Promise<{ name: string; latest: string; current?: string } | null>
+    checkPipLatestVersion: (packageName: string) => Promise<{ name: string; latest: string } | null>
   }
 
   // Services API
@@ -60,6 +62,13 @@ interface ElectronAPI {
   ai: {
     analyze: () => Promise<AnalysisResult>
     updateConfig: (config: AIConfig) => Promise<void>
+  }
+
+  // Shell API (for opening paths, URLs, and executing commands)
+  shell: {
+    openPath: (path: string) => Promise<string>
+    openExternal: (url: string) => Promise<void>
+    executeCommand: (command: string) => Promise<{ success: boolean; stdout: string; stderr: string }>
   }
 
   // Events API
@@ -102,6 +111,10 @@ const electronAPI: ElectronAPI = {
     listGem: () => ipcRenderer.invoke('packages:list-gem'),
     uninstall: (name: string, manager: string) => 
       ipcRenderer.invoke('packages:uninstall', name, manager),
+    checkNpmLatestVersion: (packageName: string) =>
+      ipcRenderer.invoke('packages:check-npm-latest', packageName),
+    checkPipLatestVersion: (packageName: string) =>
+      ipcRenderer.invoke('packages:check-pip-latest', packageName),
   },
 
   // Services API
@@ -146,6 +159,13 @@ const electronAPI: ElectronAPI = {
   ai: {
     analyze: () => ipcRenderer.invoke('ai:analyze'),
     updateConfig: (config: AIConfig) => ipcRenderer.invoke('ai:update-config', config),
+  },
+
+  // Shell API
+  shell: {
+    openPath: (path: string) => ipcRenderer.invoke('shell:open-path', path),
+    openExternal: (url: string) => ipcRenderer.invoke('shell:open-external', url),
+    executeCommand: (command: string) => ipcRenderer.invoke('shell:execute-command', command),
   },
 
   // Events API

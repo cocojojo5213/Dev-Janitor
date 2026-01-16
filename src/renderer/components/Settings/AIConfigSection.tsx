@@ -14,7 +14,7 @@ import { RobotOutlined, KeyOutlined, SaveOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import type { AIConfig } from '../../../shared/types'
 
-const { Title, Text, Paragraph } = Typography
+const { Text, Paragraph } = Typography
 const { Option } = Select
 const { Password } = Input
 
@@ -118,7 +118,7 @@ export const AIConfigSection: React.FC = () => {
           initialValues={{
             enabled: false,
             provider: 'openai',
-            model: 'gpt-3.5-turbo'
+            model: 'gpt-5'
           }}
         >
           {/* Enable AI */}
@@ -180,10 +180,29 @@ export const AIConfigSection: React.FC = () => {
             tooltip={t('settings.aiModelTooltip', '选择使用的 AI 模型')}
           >
             <Select>
-              <Option value="gpt-3.5-turbo">GPT-3.5 Turbo (推荐)</Option>
-              <Option value="gpt-4">GPT-4 (更智能，更贵)</Option>
-              <Option value="gpt-4-turbo-preview">GPT-4 Turbo</Option>
+              <Option value="gpt-5">GPT-5 (推荐 - 最强编码能力)</Option>
+              <Option value="gpt-5-mini">GPT-5 Mini (快速且经济)</Option>
+              <Option value="gpt-5-nano">GPT-5 Nano (超快超省)</Option>
+              <Option value="o3">o3 (推理增强 - 复杂问题)</Option>
+              <Option value="o4-mini">o4-mini (推理增强 - 经济版)</Option>
+              <Option value="gpt-4.1">GPT-4.1 (上一代稳定版)</Option>
             </Select>
+          </Form.Item>
+          
+          {/* Model Info Alert */}
+          <Form.Item>
+            <Alert
+              message="模型说明 (2026年1月)"
+              description={
+                <ul style={{ margin: 0, paddingLeft: 16 }}>
+                  <li>GPT-5: 400K 上下文，最强编码能力，支持 verbosity 参数</li>
+                  <li>o3/o4-mini: 推理增强模型，适合复杂逻辑问题</li>
+                  <li>注意: GPT-5 不支持自定义 temperature，使用默认值 1</li>
+                </ul>
+              }
+              type="info"
+              showIcon
+            />
           </Form.Item>
         </Form>
 

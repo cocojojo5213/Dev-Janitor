@@ -5,14 +5,16 @@
  */
 
 import React, { useState } from 'react'
-import { Drawer, Button, Spin, Alert, Card, Tag, Space, Divider, Typography, Collapse } from 'antd'
+import { Drawer, Button, Spin, Alert, Card, Tag, Space, Divider, Typography, Collapse, message, Tooltip } from 'antd'
 import { 
   RobotOutlined, 
   BulbOutlined, 
   WarningOutlined, 
   CheckCircleOutlined,
   CloseCircleOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined,
+  LinkOutlined,
+  CopyOutlined
 } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import type { AnalysisResult, Issue, Suggestion } from '../../../shared/types'
@@ -37,9 +39,26 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({ open, onCl
       setAnalysis(result)
     } catch (error) {
       console.error('Analysis failed:', error)
+      message.error('分析失败')
     } finally {
       setLoading(false)
     }
+  }
+
+  // Open a URL in browser
+  const handleOpenUrl = async (url: string) => {
+    try {
+      await window.electronAPI.shell.openExternal(url)
+    } catch (error) {
+      window.open(url, '_blank', 'noopener,noreferrer')
+    }
+  }
+
+  // Copy text to clipboard
+  const handleCopy = (text: string, label: string = '内容') => {
+    navigator.clipboard.writeText(text)
+      .then(() => message.success(`${label}已复制到剪贴板`))
+      .catch(() => message.error('复制失败'))
   }
 
   const getSeverityIcon = (severity: Issue['severity']) => {
@@ -73,6 +92,31 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({ open, onCl
       case 'low':
         return 'blue'
     }
+  }
+
+  // Check if solution contains a URL
+  const extractUrl = (text: string): string | null => {
+    const urlMatch = text.match(/https?:\/\/[^\s]+/)
+    return urlMatch ? urlMatch[0] : null
+  }
+
+  // Render action buttons for solution
+  const renderSolutionActions = (solution: string) => {
+    const url = extractUrl(solution)
+    return (
+      <Space style={{ marginTop: 8 }}>
+        {url && (
+          <Button 
+            type="primary" 
+            size="small" 
+            icon={<LinkOutlined />}
+            onClick={() => handleOpenUrl(url)}
+          >
+            打开链接
+          </Button>
+        )}
+      </Space>
+    )
   }
 
   return (
@@ -151,7 +195,12 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({ open, onCl
                         {issue.solution && (
                           <Alert
                             message={t('ai.solution', '解决方案')}
-                            description={issue.solution}
+                            description={
+                              <div>
+                                <div>{issue.solution}</div>
+                                {renderSolutionActions(issue.solution)}
+                              </div>
+                            }
                             type="success"
                             showIcon
                             icon={<CheckCircleOutlined />}
@@ -199,14 +248,26 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({ open, onCl
                           <Alert
                             message={t('ai.command', '执行命令')}
                             description={
-                              <code style={{ 
-                                background: '#f5f5f5', 
-                                padding: '4px 8px', 
-                                borderRadius: 4,
-                                display: 'block'
-                              }}>
-                                {suggestion.command}
-                              </code>
+                              <div>
+                                <code style={{ 
+                                  background: '#f5f5f5', 
+                                  padding: '4px 8px', 
+                                  borderRadius: 4,
+                                  display: 'block',
+                                  marginBottom: 8
+                                }}>
+                                  {suggestion.command}
+                                </code>
+                                <Tooltip title="复制命令">
+                                  <Button
+                                    size="small"
+                                    icon={<CopyOutlined />}
+                                    onClick={() => handleCopy(suggestion.command!, '命令')}
+                                  >
+                                    复制命令
+                                  </Button>
+                                </Tooltip>
+                              </div>
                             }
                             type="info"
                           />
@@ -229,7 +290,7 @@ export const AIAssistantDrawer: React.FC<AIAssistantDrawerProps> = ({ open, onCl
                 }
                 size="small"
               >
-                <Collapse ghost>
+                <Collapse ghost defaultActiveKey={['0']}>
                   {analysis.insights.map((insight, index) => (
                     <Panel 
                       header={t('ai.insightDetail', `分析 ${index + 1}`)} 

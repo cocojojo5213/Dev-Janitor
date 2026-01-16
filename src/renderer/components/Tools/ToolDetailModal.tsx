@@ -5,21 +5,15 @@
  * - Full tool information (name, version, path, status)
  * - Installation method
  * - Category
- * - Action buttons (update, uninstall, copy path)
- * 
- * Validates: Requirements 2.2, 2.3, 2.4, 2.5, 6.1, 6.2, 6.3, 6.4
- * Property 3: Complete Tool Information Display
+ * - Copy path button only (safe operation)
  */
 
 import React from 'react'
-import { Modal, Descriptions, Tag, Button, Space, Typography, message, Divider } from 'antd'
+import { Modal, Descriptions, Tag, Button, Space, Typography } from 'antd'
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   SyncOutlined,
-  DeleteOutlined,
-  FolderOpenOutlined,
-  CopyOutlined,
 } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import type { ToolInfo } from '@shared/types'
@@ -87,30 +81,6 @@ const ToolDetailModal: React.FC<ToolDetailModalProps> = ({
     return null
   }
 
-  const handleCopyPath = () => {
-    if (tool.path) {
-      navigator.clipboard.writeText(tool.path)
-        .then(() => {
-          message.success(t('notifications.copySuccess'))
-        })
-        .catch(() => {
-          message.error(t('notifications.copyFailed'))
-        })
-    }
-  }
-
-  const handleUpdate = () => {
-    message.info('Update functionality coming soon')
-  }
-
-  const handleUninstall = () => {
-    message.info('Uninstall functionality coming soon')
-  }
-
-  const handleOpenLocation = () => {
-    message.info('Open location functionality coming soon')
-  }
-
   return (
     <Modal
       title={
@@ -142,42 +112,35 @@ const ToolDetailModal: React.FC<ToolDetailModalProps> = ({
       }
       width={600}
     >
-      {/* Tool Information - Validates: Property 3 */}
+      {/* Tool Information */}
       <Descriptions
         bordered
         column={1}
         size="small"
         className="mb-4"
       >
-        {/* Name - Validates: Requirement 2.2 */}
-        <Descriptions.Item label={<Text strong>{t('tools.toolNames.nodejs').split('.')[0] ? 'Name' : 'Name'}</Text>}>
+        {/* Name */}
+        <Descriptions.Item label={<Text strong>名称</Text>}>
           <Text>{tool.displayName || tool.name}</Text>
         </Descriptions.Item>
 
-        {/* Version - Validates: Requirement 2.3 */}
+        {/* Version */}
         <Descriptions.Item label={<Text strong>{t('tools.version')}</Text>}>
           <Text className="font-mono">
             {tool.version || t('common.unknown')}
           </Text>
         </Descriptions.Item>
 
-        {/* Path - Validates: Requirement 2.4 */}
+        {/* Path */}
         <Descriptions.Item label={<Text strong>{t('tools.path')}</Text>}>
           <div className="flex items-center justify-between">
             <Paragraph
               className="font-mono text-sm m-0 flex-1"
               ellipsis={{ rows: 2, expandable: true }}
+              copyable={tool.path ? { text: tool.path } : false}
             >
               {tool.path || t('common.unknown')}
             </Paragraph>
-            {tool.path && (
-              <Button
-                type="text"
-                size="small"
-                icon={<CopyOutlined />}
-                onClick={handleCopyPath}
-              />
-            )}
           </div>
         </Descriptions.Item>
 
@@ -195,8 +158,8 @@ const ToolDetailModal: React.FC<ToolDetailModalProps> = ({
           </Descriptions.Item>
         )}
 
-        {/* Status - Validates: Requirement 2.5 */}
-        <Descriptions.Item label={<Text strong>Status</Text>}>
+        {/* Status */}
+        <Descriptions.Item label={<Text strong>状态</Text>}>
           {tool.isInstalled ? (
             <Tag icon={<CheckCircleOutlined />} color="success">
               {t('tools.installed')}
@@ -208,48 +171,6 @@ const ToolDetailModal: React.FC<ToolDetailModalProps> = ({
           )}
         </Descriptions.Item>
       </Descriptions>
-
-      {/* Actions - Validates: Requirements 6.1, 6.2, 6.3, 6.4 */}
-      {tool.isInstalled && (
-        <>
-          <Divider orientation="left">{t('common.actions')}</Divider>
-          <Space wrap>
-            {tool.path && (
-              <>
-                <Button
-                  icon={<FolderOpenOutlined />}
-                  onClick={handleOpenLocation}
-                >
-                  {t('tools.openLocation')}
-                </Button>
-                <Button
-                  icon={<CopyOutlined />}
-                  onClick={handleCopyPath}
-                >
-                  {t('tools.copyPath')}
-                </Button>
-              </>
-            )}
-            {tool.installMethod && (
-              <>
-                <Button
-                  icon={<SyncOutlined />}
-                  onClick={handleUpdate}
-                >
-                  {t('tools.update')}
-                </Button>
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  onClick={handleUninstall}
-                >
-                  {t('tools.uninstall')}
-                </Button>
-              </>
-            )}
-          </Space>
-        </>
-      )}
     </Modal>
   )
 }
