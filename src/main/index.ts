@@ -39,9 +39,21 @@ export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 
+// In production (asar), the structure is different
+// __dirname points to resources/app.asar/dist-electron
+// We need to find dist relative to that
+const isDev = !!VITE_DEV_SERVER_URL
+const getRendererPath = () => {
+  if (isDev) {
+    return RENDERER_DIST
+  }
+  // In production, dist is at the same level as dist-electron inside asar
+  return path.join(__dirname, '../dist')
+}
+
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL 
   ? path.join(process.env.APP_ROOT, 'public') 
-  : RENDERER_DIST
+  : getRendererPath()
 
 let win: BrowserWindow | null
 
@@ -70,7 +82,7 @@ function createWindow() {
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
   } else {
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
+    win.loadFile(path.join(getRendererPath(), 'index.html'))
   }
 }
 
