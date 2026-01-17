@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-1.2.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT%20with%20Commons%20Clause-green.svg" alt="License">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg" alt="Platform">
   <img src="https://img.shields.io/badge/electron-33.3.1-9feaf9.svg" alt="Electron">
@@ -62,7 +62,8 @@ Dev Janitor is a powerful desktop application designed to help developers detect
 - **NPM Packages**: View and manage globally installed npm packages
 - **Python Packages**: Browse pip-installed packages
 - **Composer Packages**: Manage PHP Composer global packages
-- **Version Check**: Detect outdated package versions (NEW!)
+- **Version Check**: Detect outdated package versions
+- **One-Click Update**: Update packages directly from the UI (npm/pip) (NEW!)
 - **Safe Operations**: View and copy path only, removed dangerous operations like delete/open file
 
 ### ⚡ Service Monitoring
@@ -103,9 +104,9 @@ Download the latest release for your platform from the [Releases](https://github
 
 | Platform | Download |
 |----------|----------|
-| Windows | `Dev-Janitor-Setup-1.0.0.exe` |
-| macOS | `Dev-Janitor-1.0.0.dmg` |
-| Linux | `Dev-Janitor-1.0.0.AppImage` |
+| Windows | `Dev-Janitor-Setup-1.2.0.exe` |
+| macOS | `Dev-Janitor-1.2.0.dmg` |
+| Linux | `Dev-Janitor-1.2.0.AppImage` |
 
 ### Build from Source
 
@@ -180,8 +181,9 @@ Manage your globally installed packages:
 1. **Switch Package Manager**: Use tabs to switch between npm, pip, and Composer
 2. **Search Packages**: Filter packages by name
 3. **Check Updates**: Click "Check All Updates" to detect outdated packages
-4. **Update Packages**: Click on outdated version tags to copy update commands
-5. **Refresh List**: Update the package list with the refresh button
+4. **One-Click Update**: Click the "Update" button next to outdated packages to update directly
+5. **Copy Command**: Click on version tags to copy update commands to clipboard
+6. **Refresh List**: Update the package list with the refresh button
 
 ### Services View
 

@@ -34,6 +34,7 @@ interface ElectronAPI {
     listCargo: () => Promise<PackageInfo[]>
     listGem: () => Promise<PackageInfo[]>
     uninstall: (name: string, manager: string) => Promise<boolean>
+    update: (name: string, manager: string) => Promise<{ success: boolean; newVersion?: string; error?: string }>
     checkNpmLatestVersion: (packageName: string) => Promise<{ name: string; latest: string; current?: string } | null>
     checkPipLatestVersion: (packageName: string) => Promise<{ name: string; latest: string } | null>
   }
@@ -114,6 +115,8 @@ const electronAPI: ElectronAPI = {
     listGem: () => ipcRenderer.invoke('packages:list-gem'),
     uninstall: (name: string, manager: string) => 
       ipcRenderer.invoke('packages:uninstall', name, manager),
+    update: (name: string, manager: string) =>
+      ipcRenderer.invoke('packages:update', name, manager),
     checkNpmLatestVersion: (packageName: string) =>
       ipcRenderer.invoke('packages:check-npm-latest', packageName),
     checkPipLatestVersion: (packageName: string) =>

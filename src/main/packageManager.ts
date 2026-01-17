@@ -393,6 +393,68 @@ export async function uninstallPackage(
 }
 
 /**
+ * Update a package to the latest version using the appropriate package manager
+ * 
+ * @param packageName The name of the package to update
+ * @param manager The package manager to use
+ * @returns Promise resolving to object with success status and new version
+ */
+export async function updatePackage(
+  packageName: string,
+  manager: 'npm' | 'pip'
+): Promise<{ success: boolean; newVersion?: string; error?: string }> {
+  let command: string
+  
+  switch (manager) {
+    case 'npm':
+      command = `npm update -g ${packageName}`
+      break
+    case 'pip':
+      // Try py -m pip on Windows first
+      if (isWindows()) {
+        const pyResult = await executeSafe(`py -m pip install --upgrade ${packageName}`)
+        if (pyResult.success) {
+          // Get the new version after update
+          const versionResult = await executeSafe(`py -m pip show ${packageName}`)
+          const versionMatch = versionResult.stdout.match(/Version:\s*(.+)/i)
+          return { 
+            success: true, 
+            newVersion: versionMatch ? versionMatch[1].trim() : undefined 
+          }
+        }
+      }
+      command = `pip install --upgrade ${packageName}`
+      break
+    default:
+      return { success: false, error: 'Unsupported package manager for update' }
+  }
+  
+  const result = await executeSafe(command)
+  
+  if (!result.success) {
+    return { success: false, error: result.stderr || 'Update failed' }
+  }
+  
+  // Get the new version after update
+  let newVersion: string | undefined
+  if (manager === 'npm') {
+    const versionResult = await executeSafe(`npm list -g ${packageName} --depth=0 --json`)
+    try {
+      const data = JSON.parse(versionResult.stdout)
+      newVersion = data.dependencies?.[packageName]?.version
+    } catch {
+      // Ignore parse errors
+    }
+  } else if (manager === 'pip') {
+    const versionResult = await executeSafe(`pip show ${packageName}`)
+    const versionMatch = versionResult.stdout.match(/Version:\s*(.+)/i)
+    newVersion = versionMatch ? versionMatch[1].trim() : undefined
+  }
+  
+  return { success: true, newVersion }
+}
+
+/**
  * Get the global installation path for a package manager
  * 
  * @param manager The package manager
@@ -533,6 +595,16 @@ export class PackageManager {
     manager: 'npm' | 'pip' | 'composer' | 'cargo' | 'gem'
   ): Promise<boolean> {
     return uninstallPackage(packageName, manager)
+  }
+  
+  /**
+   * Update a package to the latest version
+   */
+  async updatePackage(
+    packageName: string,
+    manager: 'npm' | 'pip'
+  ): Promise<{ success: boolean; newVersion?: string; error?: string }> {
+    return updatePackage(packageName, manager)
   }
   
   /**

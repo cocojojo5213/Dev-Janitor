@@ -17,6 +17,7 @@ import {
   ArrowUpOutlined,
   LoadingOutlined,
   SyncOutlined,
+  DownloadOutlined,
 } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import type { PackageInfo } from '@shared/types'
@@ -36,6 +37,7 @@ interface VersionInfo {
   latest: string
   checking: boolean
   checked: boolean
+  updating?: boolean
 }
 
 /**
@@ -74,6 +76,7 @@ const compareVersions = (v1: string, v2: string): number => {
 const PackageTable: React.FC<PackageTableProps> = ({
   packages,
   loading,
+  onRefresh,
   manager,
 }) => {
   const { t } = useTranslation()
@@ -115,6 +118,51 @@ const PackageTable: React.FC<PackageTableProps> = ({
       .catch(() => {
         message.error(t('notifications.copyFailed', 'Copy failed'))
       })
+  }
+
+  // Update a single package
+  const handleUpdatePackage = async (packageName: string) => {
+    if (manager !== 'npm' && manager !== 'pip') {
+      message.info(t('packages.updateNotSupported', 'Update only supports npm and pip'))
+      return
+    }
+
+    setVersionCache(prev => ({
+      ...prev,
+      [packageName]: { ...prev[packageName], updating: true }
+    }))
+
+    try {
+      const result = await window.electronAPI.packages.update(packageName, manager)
+      
+      if (result.success) {
+        message.success(t('packages.updateSuccess', 'Package updated successfully'))
+        // Update the version cache to show as latest
+        setVersionCache(prev => ({
+          ...prev,
+          [packageName]: { 
+            latest: result.newVersion || prev[packageName]?.latest || '', 
+            checking: false, 
+            checked: true,
+            updating: false 
+          }
+        }))
+        // Trigger a refresh to update the package list
+        onRefresh()
+      } else {
+        message.error(result.error || t('packages.updateFailed', 'Failed to update package'))
+        setVersionCache(prev => ({
+          ...prev,
+          [packageName]: { ...prev[packageName], updating: false }
+        }))
+      }
+    } catch (error) {
+      message.error(t('packages.updateFailed', 'Failed to update package'))
+      setVersionCache(prev => ({
+        ...prev,
+        [packageName]: { ...prev[packageName], updating: false }
+      }))
+    }
   }
 
   const handleOpenExternal = (packageName: string) => {
@@ -214,6 +262,7 @@ const PackageTable: React.FC<PackageTableProps> = ({
         </Tag>
       )
     } else {
+      const isUpdating = info.updating
       return (
         <Space>
           <Tooltip title={`${t('packages.latestVersion', 'Latest version')}: ${info.latest}`}>
@@ -223,8 +272,19 @@ const PackageTable: React.FC<PackageTableProps> = ({
               style={{ cursor: 'pointer' }}
               onClick={() => handleCopyUpdateCommand(record.name)}
             >
-              {t('packages.canUpdate', 'Update')} → {info.latest}
+              {info.latest}
             </Tag>
+          </Tooltip>
+          <Tooltip title={t('packages.clickToUpdate', 'Click to update')}>
+            <Button
+              type="primary"
+              size="small"
+              icon={isUpdating ? <LoadingOutlined /> : <DownloadOutlined />}
+              onClick={() => handleUpdatePackage(record.name)}
+              disabled={isUpdating}
+            >
+              {isUpdating ? t('packages.updating', 'Updating...') : t('packages.update', 'Update')}
+            </Button>
           </Tooltip>
         </Space>
       )

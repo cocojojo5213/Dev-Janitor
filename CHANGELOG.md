@@ -5,6 +5,45 @@ All notable changes to Dev Janitor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-01-17
+
+### Added
+
+#### One-Click Package Update (NEW!)
+- Direct package update button in the package table
+- Support for npm global packages update (`npm update -g`)
+- Support for pip packages update (`pip install --upgrade`)
+- Real-time update progress indication
+- Automatic package list refresh after update
+- Version status display with latest version number
+
+#### Internationalization
+- Added Chinese translations for package update feature
+- Added English translations for package update feature
+
+### Changed
+- Improved package version status column UI
+- Version tag now shows target version number directly
+
+---
+
+## [1.1.0] - 2026-01-17
+
+### Added
+
+#### Custom AI Provider Support
+- Support for custom OpenAI-compatible API endpoints
+- Configurable base URL for self-hosted or third-party AI services
+- Model selection dropdown with manual input option
+- Fetch available models from custom endpoints
+- Connection test functionality
+
+### Changed
+- Improved AI configuration UI with better tooltips
+- Enhanced error handling for AI API calls
+
+---
+
 ## [1.0.0] - 2024-01-XX
 
 ### Added
@@ -115,18 +154,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Future Releases
 
 ### Planned Features
-- [ ] Tool update functionality
-- [ ] Package update notifications
+- [x] Package update notifications
+- [x] Tool update functionality (npm/pip)
 - [ ] Custom tool detection rules
 - [ ] Export/import configuration
 - [ ] Dark mode support
 - [ ] System tray integration
 - [ ] Keyboard shortcuts
 - [ ] Plugin system for additional tools
+- [ ] Composer package update support
 
 ### Known Issues
 - None reported yet
 
 ---
 
+[1.2.0]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.2.0
+[1.1.0]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.1.0
 [1.0.0]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.0.0

@@ -127,7 +127,13 @@
     "checkAllUpdates": "Check All Updates",
     "latest": "Latest",
     "latestVersion": "Latest version",
-    "canUpdate": "Update"
+    "canUpdate": "Update",
+    "update": "Update",
+    "updating": "Updating...",
+    "updateSuccess": "Package updated successfully",
+    "updateFailed": "Failed to update package",
+    "updateNotSupported": "Update only supports npm and pip",
+    "clickToUpdate": "Click to update"
   },
   "services": {
     "title": "Running Services",

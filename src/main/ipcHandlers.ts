@@ -204,6 +204,23 @@ function registerPackagesHandlers(): void {
       return null
     }
   })
+
+  // Update a package to the latest version
+  ipcMain.handle('packages:update', async (_event, name: string, manager: string): Promise<{ success: boolean; newVersion?: string; error?: string }> => {
+    try {
+      if (manager !== 'npm' && manager !== 'pip') {
+        return { success: false, error: `Package update not supported for ${manager}` }
+      }
+      const result = await packageManager.updatePackage(name, manager)
+      return result
+    } catch (error) {
+      console.error(`Error updating package ${name}:`, error)
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      }
+    }
+  })
 }
 
 /**
@@ -493,6 +510,7 @@ export function cleanupIPCHandlers(): void {
   ipcMain.removeHandler('packages:list-cargo')
   ipcMain.removeHandler('packages:list-gem')
   ipcMain.removeHandler('packages:uninstall')
+  ipcMain.removeHandler('packages:update')
   ipcMain.removeHandler('packages:check-npm-latest')
   ipcMain.removeHandler('packages:check-pip-latest')
   ipcMain.removeHandler('services:list')

@@ -127,7 +127,13 @@
     "checkAllUpdates": "检查所有包的更新",
     "latest": "最新",
     "latestVersion": "最新版本",
-    "canUpdate": "可更新"
+    "canUpdate": "可更新",
+    "update": "更新",
+    "updating": "更新中...",
+    "updateSuccess": "包更新成功",
+    "updateFailed": "包更新失败",
+    "updateNotSupported": "更新功能仅支持 npm 和 pip",
+    "clickToUpdate": "点击更新"
   },
   "services": {
     "title": "运行中的服务",

@@ -18,11 +18,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/版本-1.0.0-blue.svg" alt="版本">
+  <img src="https://img.shields.io/badge/版本-1.2.0-blue.svg" alt="版本">
   <img src="https://img.shields.io/badge/许可证-MIT%20with%20Commons%20Clause-green.svg" alt="许可证">
   <img src="https://img.shields.io/badge/平台-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg" alt="平台">
-  <img src="https://img.shields.io/badge/electron-30.0.1-9feaf9.svg" alt="Electron">
-  <img src="https://img.shields.io/badge/react-18.2.0-61dafb.svg" alt="React">
+  <img src="https://img.shields.io/badge/electron-33.3.1-9feaf9.svg" alt="Electron">
+  <img src="https://img.shields.io/badge/react-18.3.1-61dafb.svg" alt="React">
 </p>
 
 ---
@@ -62,7 +62,8 @@ Dev Janitor（开发清道夫）是一款功能强大的桌面应用程序，旨
 - **NPM 包**：查看和管理全局安装的 npm 包
 - **Python 包**：浏览 pip 安装的包
 - **Composer 包**：管理 PHP Composer 全局包
-- **版本检查**：检测过时的依赖包版本（新功能！）
+- **版本检查**：检测过时的依赖包版本
+- **一键更新**：直接在界面中更新包（支持 npm/pip）（新功能！）
 - **安全操作**：仅支持查看和复制路径，移除了删除/打开文件等危险操作
 
 ### ⚡ 服务监控
@@ -103,9 +104,9 @@ Dev Janitor（开发清道夫）是一款功能强大的桌面应用程序，旨
 
 | 平台 | 下载 |
 |------|------|
-| Windows | `Dev-Janitor-Setup-1.0.0.exe` |
-| macOS | `Dev-Janitor-1.0.0.dmg` |
-| Linux | `Dev-Janitor-1.0.0.AppImage` |
+| Windows | `Dev-Janitor-Setup-1.2.0.exe` |
+| macOS | `Dev-Janitor-1.2.0.dmg` |
+| Linux | `Dev-Janitor-1.2.0.AppImage` |
 
 ### 从源码构建
 
@@ -180,8 +181,9 @@ AI 助手帮助你智能分析和优化开发环境：
 1. **切换包管理器**：使用标签页在 npm、pip 和 Composer 之间切换
 2. **搜索包**：按名称过滤包
 3. **检查更新**：点击"检查所有包的更新"检测过时的包
-4. **更新包**：点击过时版本标签复制更新命令
-5. **刷新列表**：使用刷新按钮更新包列表
+4. **一键更新**：点击过时包旁边的"更新"按钮直接更新
+5. **复制命令**：点击版本标签复制更新命令到剪贴板
+6. **刷新列表**：使用刷新按钮更新包列表
 
 ### 服务视图
 
@@ -213,7 +215,7 @@ AI 助手帮助你智能分析和优化开发环境：
 
 ### 技术栈
 
-- **框架**：Electron 30
+- **框架**：Electron 33
 - **前端**：React 18 + TypeScript
 - **UI 库**：Ant Design 5
 - **状态管理**：Zustand
