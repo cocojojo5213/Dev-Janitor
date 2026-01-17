@@ -36,7 +36,7 @@ interface LanguageSelectorProps {
 const languageOptions = SUPPORTED_LANGUAGES.map(lang => ({
   value: lang,
   label: (
-    <Space>
+    <Space align="center">
       <span>{getLanguageFlag(lang)}</span>
       <span>{LANGUAGE_NAMES[lang]}</span>
     </Space>
@@ -83,9 +83,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     <div className={className}>
       {showLabel && (
         <Space direction="vertical" size="small" className="mb-2">
-          <Space>
+          <Space align="center">
             <GlobalOutlined className="text-blue-500" />
-            <Title level={5} className="!mb-0">
+            <Title level={5} className="!m-0">
               {t('settings.language')}
             </Title>
           </Space>
@@ -144,9 +144,9 @@ export const LanguageCard: React.FC = () => {
     <Card className="mb-4">
       <div className="flex items-center justify-between">
         <Space direction="vertical" size="small">
-          <Space>
+          <Space align="center">
             <GlobalOutlined className="text-blue-500 text-lg" />
-            <Title level={5} className="!mb-0">
+            <Title level={5} className="!m-0">
               {t('settings.language')}
             </Title>
           </Space>

@@ -149,7 +149,7 @@ export const AIConfigSection: React.FC = () => {
   return (
     <Card
       title={
-        <Space>
+        <Space align="center">
           <RobotOutlined />
           <span>{t('settings.aiConfig', 'AI 助手配置')}</span>
         </Space>

@@ -97,7 +97,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ className = '' }) =>
           >
             <ToolOutlined style={{ fontSize: 30, color: token.colorPrimary }} />
           </div>
-          <Title level={3} className="!mb-1">
+          <Title level={3} className="!mt-0 !mb-2">
             {APP_INFO.name}
           </Title>
           <Space>

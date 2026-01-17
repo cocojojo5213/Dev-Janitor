@@ -38,9 +38,9 @@ export const ThemeCard: React.FC = () => {
     <Card className="mb-4">
       <div className="flex items-center justify-between">
         <Space direction="vertical" size="small">
-          <Space>
+          <Space align="center">
             <BgColorsOutlined className="text-purple-500 text-lg" />
-            <Title level={5} className="!mb-0">
+            <Title level={5} className="!m-0">
               {t('settings.theme')}
             </Title>
           </Space>
