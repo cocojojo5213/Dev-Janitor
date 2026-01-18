@@ -81,7 +81,7 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       // Enable sandbox for better security on Mac
-      sandbox: false, // Set to false to allow preload script to work properly
+      sandbox: true,
     },
     title: 'Dev Tools Manager',
     // Mac-specific: show window when ready to prevent white flash
