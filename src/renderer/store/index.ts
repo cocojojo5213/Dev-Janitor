@@ -334,13 +334,6 @@ export const useAppStore = create<AppState>()(
         
         // Update i18next language
         i18n.changeLanguage(lang)
-        
-        // Persist to main process (for system-level persistence)
-        if (ipcClient.isElectron()) {
-          ipcClient.settings.setLanguage(lang).catch(error => {
-            console.error('Failed to persist language setting:', error)
-          })
-        }
       },
 
       /**
@@ -407,11 +400,11 @@ export const useAppStore = create<AppState>()(
        */
       initializeLanguage: async () => {
         try {
-          if (ipcClient.isElectron()) {
-            // Try to get persisted language from main process
-            const persistedLang = await ipcClient.settings.getLanguage()
-            
-            if (persistedLang && (persistedLang === 'zh-CN' || persistedLang === 'en-US')) {
+          const persisted = localStorage.getItem('dev-tools-manager-storage')
+          if (persisted) {
+            const parsed = JSON.parse(persisted) as { state?: { language?: unknown } }
+            const persistedLang = parsed.state?.language
+            if (persistedLang === 'zh-CN' || persistedLang === 'en-US') {
               set({ language: persistedLang })
               i18n.changeLanguage(persistedLang)
               return
