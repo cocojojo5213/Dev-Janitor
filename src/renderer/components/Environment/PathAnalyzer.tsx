@@ -116,7 +116,7 @@ const PathAnalyzer: React.FC<PathAnalyzerProps> = ({ pathEntries }) => {
           <FolderOutlined />
           <span>{t('environment.pathAnalysis')}</span>
           <Tag color="blue">
-            {pathEntries.length} {t('environment.pathEntryCount', { count: pathEntries.length })}
+            {t('environment.pathEntryCount', { count: pathEntries.length })}
           </Tag>
         </div>
       }

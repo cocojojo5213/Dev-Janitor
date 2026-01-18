@@ -324,6 +324,8 @@
     "help2": "Find environment configuration issues",
     "help3": "Provide optimization suggestions",
     "help4": "Recommend common tools to install",
-    "helpNote": "Click 'Analyze Environment' button to start intelligent analysis"
+    "helpNote": "Click 'Analyze Environment' button to start intelligent analysis",
+    "refresh": "Regenerate Suggestions",
+    "refreshed": "AI recommendations refreshed"
   }
 }

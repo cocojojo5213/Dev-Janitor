@@ -267,7 +267,7 @@ const EnvironmentView: React.FC = () => {
               <div className="flex items-center gap-2">
                 <span>{t('environment.title')}</span>
                 <Tag color="blue">
-                  {filteredVariables.length} {t('environment.variableCount', { count: filteredVariables.length })}
+                  {t('environment.variableCount', { count: filteredVariables.length })}
                 </Tag>
               </div>
             }
