@@ -13,7 +13,7 @@ import { Table, Button, Typography, Tooltip, message, Tag, Space, Progress } fro
 import {
   LinkOutlined,
   CopyOutlined,
-  CheckCircleOutlined,
+  ArrowRightOutlined,
   ArrowUpOutlined,
   LoadingOutlined,
   SyncOutlined,
@@ -58,7 +58,6 @@ const getPackageUrl = (packageName: string, manager: 'npm' | 'pip' | 'composer')
 const compareVersions = (v1: string, v2: string): number => {
   const parts1 = v1.replace(/^[^\d]*/, '').split('.').map(n => parseInt(n) || 0)
   const parts2 = v2.replace(/^[^\d]*/, '').split('.').map(n => parseInt(n) || 0)
-
   for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
     const p1 = parts1[i] || 0
     const p2 = parts2[i] || 0
@@ -89,13 +88,13 @@ const PackageTable: React.FC<PackageTableProps> = ({
   // Memoize version comparison results to avoid recalculation on every render
   // Validates: Requirement 7.1
   const memoizedVersionComparison = useMemo(() => {
-    return packages.reduce((acc, pkg) => {
+    return packages.reduce<Record<string, number>>((acc, pkg) => {
       const cached = packageVersionCache[pkg.name];
       if (cached?.checked && cached.latest) {
         acc[pkg.name] = compareVersions(pkg.version, cached.latest);
       }
       return acc;
-    }, {} as Record<string, number>);
+    }, {});
   }, [packages, packageVersionCache]);
 
   // Validates: Requirement 7.2
@@ -134,308 +133,240 @@ const PackageTable: React.FC<PackageTableProps> = ({
 
   // Validates: Requirement 7.2
   // Update a single package
-  const handleUpdatePackage = useCallback(async (packageName: string) => {
-    if (manager !== 'npm' && manager !== 'pip') {
-      message.info(t('packages.updateNotSupported', 'Update only supports npm and pip'))
-      return
-    }
-
-    updatePackageVersionInfo(packageName, { updating: true })
-
-    try {
-      // 防御性检查：确保 electronAPI.packages 存在
-      if (!window.electronAPI?.packages?.update) {
-        throw new Error('Packages API not available')
-      }
-      const result = await window.electronAPI.packages.update(packageName, manager)
-
-      if (result.success) {
-        message.success(t('packages.updateSuccess', 'Package updated successfully'))
-        // Update the version cache to show as latest
-        updatePackageVersionInfo(packageName, {
-          latest: result.newVersion || packageVersionCache[packageName]?.latest || '',
-          checking: false,
-          checked: true,
-          updating: false
-        })
-        // Trigger a refresh to update the package list
-        onRefresh()
-      } else {
-        message.error(result.error || t('packages.updateFailed', 'Failed to update package'))
-        updatePackageVersionInfo(packageName, { updating: false })
-      }
-    } catch (error) {
-      message.error(t('packages.updateFailed', 'Failed to update package'))
-      updatePackageVersionInfo(packageName, { updating: false })
-    }
-  }, [manager, t, onRefresh, updatePackageVersionInfo, packageVersionCache])
-
-  // Validates: Requirement 7.2
-  const handleOpenExternal = useCallback((packageName: string) => {
-    const url = getPackageUrl(packageName, manager)
-    if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer')
-    }
-  }, [manager])
-
-  // Validates: Requirement 7.2
-  // Check single package version
   const checkVersion = useCallback(async (packageName: string) => {
-    if (manager !== 'npm' && manager !== 'pip') {
-      message.info(t('packages.versionCheckNotSupported', 'Version check only supports npm and pip'))
-      return
-    }
-
+    if (manager !== 'npm' && manager !== 'pip') return;
+    
+    // 标记为“检查中”
     updatePackageVersionInfo(packageName, { latest: '', checking: true, checked: false })
-
+    
     try {
-      // 防御性检查：确保 electronAPI.packages 存在
-      if (!window.electronAPI?.packages) {
-        throw new Error('Packages API not available')
-      }
-      let result = null
-      if (manager === 'npm') {
-        result = await window.electronAPI.packages.checkNpmLatestVersion(packageName)
-      } else if (manager === 'pip') {
-        result = await window.electronAPI.packages.checkPipLatestVersion(packageName)
-      }
-
-      if (result) {
-        updatePackageVersionInfo(packageName, { latest: result.latest, checking: false, checked: true })
-      } else {
-        updatePackageVersionInfo(packageName, { latest: t('common.unknown', 'Unknown'), checking: false, checked: true })
-      }
-    } catch (error) {
-      updatePackageVersionInfo(packageName, { latest: t('packages.checkFailed', 'Check failed'), checking: false, checked: true })
+      const result = manager === 'npm' 
+        ? await window.electronAPI.packages.checkNpmLatestVersion(packageName) 
+        : await window.electronAPI.packages.checkPipLatestVersion(packageName);
+      
+      updatePackageVersionInfo(packageName, { 
+        latest: result?.latest || t('common.unknown'), 
+        checking: false, 
+        checked: true 
+      })
+    } catch {
+      updatePackageVersionInfo(packageName, { latest: 'error', checking: false, checked: true })
     }
   }, [manager, t, updatePackageVersionInfo])
 
-  // Validates: Requirements 7.2, 8.1, 8.2, 8.3, 8.4
-  // Check all packages versions with progress tracking and cancellation support
-  const checkAllVersions = useCallback(async () => {
-    if (manager !== 'npm' && manager !== 'pip') {
-      message.info(t('packages.versionCheckNotSupported', 'Version check only supports npm and pip'))
-      return
-    }
 
-    // Create abort controller for cancellation - Validates: Requirement 8.4
-    abortControllerRef.current = new AbortController()
-
-    setCheckingAll(true)
-    // Initialize progress - Validates: Requirements 8.1, 8.2
-    setCheckProgress({ total: packages.length, completed: 0, cancelled: false })
-
-    for (let i = 0; i < packages.length; i++) {
-      // Check if cancelled - Validates: Requirement 8.4
-      if (abortControllerRef.current?.signal.aborted) {
-        setCheckProgress(prev => prev ? { ...prev, cancelled: true } : null)
-        break
+  const handleUpdatePackage = useCallback(async (packageName: string) => {
+    if (manager !== 'npm' && manager !== 'pip') return;
+    
+    updatePackageVersionInfo(packageName, { updating: true })
+    try {
+      const result = await window.electronAPI.packages.update(packageName, manager)
+      if (result.success) {
+        message.success(t('packages.updateSuccess'))
+        onRefresh()
+        await checkVersion(packageName) // 刷新最新版本状态
+      } else {
+        message.error(result.error || t('packages.updateFailed'))
       }
-
-      await checkVersion(packages[i].name)
-      // Update progress - Validates: Requirement 8.2
-      setCheckProgress(prev => prev ? { ...prev, completed: i + 1 } : null)
-
-      // Small delay to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 200))
+    } catch {
+      message.error(t('packages.updateFailed'))
+    } finally {
+      updatePackageVersionInfo(packageName, { updating: false })
     }
+  }, [manager, t, onRefresh, checkVersion, updatePackageVersionInfo])
 
-    setCheckingAll(false)
+  /**
+   * 异步并行全量检查
+   */
+  const checkAllVersions = useCallback(async () => {
+    if (manager !== 'npm' && manager !== 'pip') return;
+    
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+    
+    setCheckingAll(true);
+    setCheckProgress({ total: packages.length, completed: 0, cancelled: false });
 
-    // Show completion notification - Validates: Requirement 8.3
-    if (!abortControllerRef.current?.signal.aborted) {
-      message.success(t('packages.versionCheckComplete', 'Version check complete'))
-    } else {
-      message.info(t('packages.versionCheckCancelled', 'Version check cancelled'))
+    const CONCURRENCY_LIMIT = 5; // 设置并发数为 5
+    const queue = [...packages];
+    let completedCount = 0;
+
+    // 工作单元：不断从队列中取出任务执行
+    const worker = async () => {
+      while (queue.length > 0 && !signal.aborted) {
+        const pkg = queue.shift();
+        if (!pkg) break;
+        try {
+          await checkVersion(pkg.name);
+        } finally {
+          completedCount++;
+          setCheckProgress(prev => prev ? { ...prev, completed: completedCount } : null);
+        }
+      }
+    };
+
+    // 启动多个 Worker 并行工作
+    const workers = Array(Math.min(CONCURRENCY_LIMIT, packages.length))
+      .fill(null)
+      .map(() => worker());
+
+    try {
+      await Promise.all(workers);
+    } catch (err) {
+      console.error("Parallel check failed", err);
+    } finally {
+      setCheckingAll(false);
+      if (signal.aborted) {
+        setCheckProgress(prev => prev ? { ...prev, cancelled: true } : null);
+      }
+      // 任务结束后 1 秒自动隐藏进度条
+      setTimeout(() => setCheckProgress(null), 1000);
+      abortControllerRef.current = null;
     }
+  }, [manager, packages, checkVersion]);
 
-    setCheckProgress(null)
-    abortControllerRef.current = null
-  }, [manager, packages, t, checkVersion])
-
-  // Cancel handler for version check - Validates: Requirement 8.4
-  const handleCancelCheck = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-  }, [])
-
-  // Render version status
-  const renderVersionStatus = (record: PackageInfo) => {
-    const info = packageVersionCache[record.name]
-    const supportsCheck = manager === 'npm' || manager === 'pip'
-
-    if (!supportsCheck) {
-      return <Text type="secondary">-</Text>
-    }
-
-    if (!info || !info.checked) {
-      return (
-        <Button
-          type="link"
-          size="small"
-          icon={info?.checking ? <LoadingOutlined /> : <SyncOutlined />}
-          onClick={() => checkVersion(record.name)}
-          disabled={info?.checking}
-        >
-          {info?.checking ? t('packages.checking', 'Checking...') : t('packages.checkUpdate', 'Check Update')}
-        </Button>
-      )
-    }
-
-    // Use memoized comparison instead of calling compareVersions directly
-    const comparison = memoizedVersionComparison[record.name] ?? 0
-
-    if (comparison >= 0) {
-      return (
-        <Tag icon={<CheckCircleOutlined />} color="success">
-          {t('packages.latest', 'Latest')}
-        </Tag>
-      )
-    } else {
-      const isUpdating = info.updating
-      return (
-        <Space>
-          <Tooltip title={`${t('packages.latestVersion', 'Latest version')}: ${info.latest}`}>
-            <Tag
-              icon={<ArrowUpOutlined />}
-              color="warning"
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleCopyUpdateCommand(record.name)}
-            >
-              {info.latest}
-            </Tag>
-          </Tooltip>
-          <Tooltip title={t('packages.clickToUpdate', 'Click to update')}>
-            <Button
-              type="primary"
-              size="small"
-              icon={isUpdating ? <LoadingOutlined /> : <DownloadOutlined />}
-              onClick={() => handleUpdatePackage(record.name)}
-              disabled={isUpdating}
-            >
-              {isUpdating ? t('packages.updating', 'Updating...') : t('packages.update', 'Update')}
-            </Button>
-          </Tooltip>
-        </Space>
-      )
-    }
-  }
-
-  // Table columns
   const columns: ColumnsType<PackageInfo> = [
     {
       title: t('packages.name'),
       dataIndex: 'name',
       key: 'name',
       sorter: (a, b) => a.name.localeCompare(b.name),
-      render: (name: string) => (
-        <div className="flex items-center gap-2">
+      render: (name) => (
+        <Space>
           <Text strong className="font-mono">{name}</Text>
-          <Tooltip title={t('tooltips.openExternal', 'Open in browser')}>
-            <Button
-              type="text"
-              size="small"
-              icon={<LinkOutlined />}
-              onClick={() => handleOpenExternal(name)}
-            />
-          </Tooltip>
-        </div>
+          <Button type="text" size="small" icon={<LinkOutlined />} onClick={() => window.open(getPackageUrl(name, manager), '_blank')} />
+        </Space>
       ),
     },
     {
       title: t('packages.version'),
-      dataIndex: 'version',
       key: 'version',
-      width: 120,
-      sorter: (a, b) => a.version.localeCompare(b.version),
-      render: (version: string) => (
-        <Tag color="blue" className="font-mono">{version}</Tag>
-      ),
-    },
-    {
-      title: t('packages.versionStatus', 'Version Status'),
-      key: 'versionStatus',
-      width: 150,
-      render: (_, record) => renderVersionStatus(record),
+      width: 250,
+      render: (_, record) => {
+        const info = packageVersionCache[record.name];
+        const comparison = memoizedVersionComparison[record.name];
+        const hasUpdate = comparison !== undefined && comparison < 0;
+        const isLatest = comparison !== undefined && comparison >= 0;
+
+        return (
+          <Space size="small" wrap>
+            <Tag color="blue" className="font-mono m-0">{record.version}</Tag>
+            {/* 如果有更新，显示箭头及最新版本号 Tag */}
+            {hasUpdate && info ? (
+              <>
+                <ArrowRightOutlined style={{ fontSize: 10, color: "#bfbfbf" }} />
+                <Tooltip title={t('packages.clickToCopyCommand')}>
+                  <Tag 
+                    color="orange" 
+                    className="font-mono m-0 cursor-pointer" 
+                    icon={<ArrowUpOutlined />} 
+                    onClick={() => handleCopyUpdateCommand(record.name)}
+                  >
+                    {info.latest}
+                  </Tag>
+                </Tooltip>
+              </>
+            ) : isLatest ? (
+              /* 已是最新状态，显示绿色 Tag */
+              <Tag color="success" className="m-0">{t('packages.latest')}</Tag>
+            ) : null}
+          </Space>
+        );
+      },
     },
     {
       title: t('packages.location'),
       dataIndex: 'location',
       key: 'location',
       ellipsis: true,
-      render: (location: string) => (
+      render: (location) => (
         <div className="flex items-center gap-2">
           <Tooltip title={location}>
-            <Paragraph
-              className="font-mono text-xs m-0 flex-1"
-              ellipsis={{ rows: 1 }}
-            >
-              {location}
-            </Paragraph>
+            <Paragraph className="font-mono text-xs m-0 flex-1" ellipsis={{ rows: 1 }}>{location}</Paragraph>
           </Tooltip>
-          <Tooltip title={t('common.copy')}>
-            <Button
-              type="text"
-              size="small"
-              icon={<CopyOutlined />}
-              onClick={() => handleCopyLocation(location)}
-            />
-          </Tooltip>
+          <Button type="text" size="small" icon={<CopyOutlined />} onClick={() => handleCopyLocation(location)} />
         </div>
       ),
+    },
+    {
+      title: t('common.actions'),
+      key: 'actions',
+      width: 130,
+      align: 'right',
+      render: (_, record) => {
+        const info = packageVersionCache[record.name];
+        if (manager !== 'npm' && manager !== 'pip') return null;
+
+        const comparison = memoizedVersionComparison[record.name] ?? 0;
+
+        // 已经检查过且发现新版本 -> 显示“更新”按钮
+        if (info?.checked && comparison < 0) {
+          return (
+            <Button
+              type="primary" size="small" ghost
+              icon={info.updating ? <LoadingOutlined /> : <DownloadOutlined />}
+              onClick={() => handleUpdatePackage(record.name)}
+              disabled={info.updating}
+            >
+              {info.updating ? t('packages.updating') : t('packages.update')}
+            </Button>
+          );
+        }
+
+        // 默认显示“检查更新”按钮。如果是“检查中”，则切换为 Loading。
+        return (
+          <Button
+            type="link" size="small"
+            icon={info?.checking ? <LoadingOutlined /> : <SyncOutlined />}
+            onClick={() => checkVersion(record.name)}
+            disabled={info?.checking}
+          >
+            {info?.checking ? "" : t('packages.checkUpdate')}
+          </Button>
+        );
+      },
     },
   ]
 
   return (
-    <div>
-      {(manager === 'npm' || manager === 'pip') && packages.length > 0 && (
+    <div className="package-table">
+      {/* 顶部操作区：全量检查及进度展示 */}
+      {(manager === 'npm' || manager === 'pip') && (
         <div style={{ marginBottom: 16 }}>
           <Space>
-            <Button
-              icon={checkingAll ? <LoadingOutlined /> : <SyncOutlined />}
-              onClick={checkAllVersions}
-              disabled={checkingAll}
+            <Button 
+              icon={checkingAll ? <LoadingOutlined /> : <SyncOutlined />} 
+              onClick={checkAllVersions} 
+              disabled={checkingAll || packages.length === 0}
             >
-              {checkingAll ? t('packages.checking', 'Checking...') : t('packages.checkAllUpdates', 'Check All Updates')}
+              {checkingAll ? t('packages.checking') : t('packages.checkAllUpdates')}
             </Button>
-            {/* Cancel button - Validates: Requirement 8.4 */}
             {checkingAll && (
-              <Button
-                icon={<StopOutlined />}
-                onClick={handleCancelCheck}
-                danger
-              >
-                {t('common.cancel', 'Cancel')}
+              <Button icon={<StopOutlined />} onClick={() => abortControllerRef.current?.abort()} danger>
+                {t('common.cancel')}
               </Button>
             )}
           </Space>
-          {/* Progress bar - Validates: Requirements 8.1, 8.2 */}
           {checkProgress && (
             <div style={{ marginTop: 8 }}>
-              <Progress
-                percent={Math.round((checkProgress.completed / checkProgress.total) * 100)}
-                status={checkProgress.cancelled ? 'exception' : 'active'}
-                format={() => `${checkProgress.completed}/${checkProgress.total}`}
+              <Progress 
+                percent={Math.round((checkProgress.completed / checkProgress.total) * 100)} 
+                size="small" 
+                status={checkProgress.cancelled ? 'exception' : 'active'} 
+                format={() => `${checkProgress.completed}/${checkProgress.total}`} 
               />
             </div>
           )}
         </div>
       )}
-      <Table
-        columns={columns}
-        dataSource={packages}
-        loading={loading}
-        rowKey="name"
-        size="middle"
-        pagination={{
-          pageSize: 20,
-          showSizeChanger: true,
-          showTotal: (total) => `${total} ${t('packages.title').toLowerCase()}`,
-        }}
-        locale={{
-          emptyText: t('packages.noPackages'),
-        }}
+
+      <Table 
+        columns={columns} 
+        dataSource={packages} 
+        loading={loading} 
+        rowKey="name" 
+        size="middle" 
+        pagination={{ pageSize: 20, showSizeChanger: true }} 
       />
     </div>
   )
