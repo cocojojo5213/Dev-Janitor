@@ -148,7 +148,20 @@ const PackagesView: React.FC = () => {
 
   // Render content based on manager installation status
   const renderContent = () => {
-    // Error state
+    // 优先显示加载状态，防止工具检测未完成导致的误判
+    if (packagesLoading) {
+      return (
+        <PackageTable
+          packages={filteredPackages}
+          loading={true}
+          onUninstall={handleUninstall}
+          onRefresh={handleRefresh}
+          manager={activeTab}
+        />
+      )
+    }
+
+    // 错误处理
     if (packagesError) {
       return (
         <Alert
@@ -165,8 +178,9 @@ const PackagesView: React.FC = () => {
       )
     }
 
-    // Manager not installed - Validates: Requirements 3.4, 4.4
-    if (!isCurrentManagerInstalled() && !packagesLoading) {
+    // 只有在加载完成且明确未安装时显示 Empty
+    // 增加 tools.length > 0 判断以确保环境数据已同步
+    if (tools.length > 0 && !isCurrentManagerInstalled()) {
       const managerName = activeTab.toUpperCase()
       return (
         <Empty
@@ -183,7 +197,7 @@ const PackagesView: React.FC = () => {
     return (
       <PackageTable
         packages={filteredPackages}
-        loading={packagesLoading}
+        loading={false}
         onUninstall={handleUninstall}
         onRefresh={handleRefresh}
         manager={activeTab}
