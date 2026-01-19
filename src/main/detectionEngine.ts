@@ -450,6 +450,40 @@ export class DetectionEngine {
   }
 
   /**
+   * Detect Java installation
+   *
+   * Property 1: Tool Detection Consistency
+   */
+  async detectJava(): Promise<ToolInfo> {
+    const name = 'java'
+    const displayName = 'Java'
+    const category: ToolInfo['category'] = 'runtime'
+
+    try {
+      const versionResult = await this.executor.executeSafe('java -version')
+
+      if (!versionResult.success) {
+        return createUnavailableTool(name, displayName, category)
+      }
+
+      const { version } = parseVersion(versionResult.stderr)
+      const path = await this.executor.getToolPath(name)
+
+      return {
+        name,
+        displayName,
+        version,
+        path,
+        isInstalled: true,
+        installMethod: detectInstallMethod(path),
+        category,
+      }
+    } catch {
+      return createUnavailableTool(name, displayName, category)
+    }
+  }
+
+  /**
    * Detect Python installation
    * 
    * Property 1: Tool Detection Consistency
@@ -718,6 +752,9 @@ export class DetectionEngine {
       case 'composer':
         result = await this.detectComposer()
         break
+      case 'java':
+        result = await this.detectJava()
+        break
       default:
         result = await this.detectCustomTool(toolName)
     }
@@ -745,7 +782,7 @@ export class DetectionEngine {
       () => this.detectNodeJS(),
       () => this.detectPython(),
       () => this.detectPHP(),
-      () => this.detectCustomTool('java', 'Java', '-version'),
+      () => this.detectJava(),
       () => this.detectCustomTool('go', 'Go', 'version'),
       () => this.detectCustomTool('rustc', 'Rust', '--version'),
       () => this.detectCustomTool('ruby', 'Ruby', '--version'),

@@ -165,6 +165,20 @@ describe('DetectionEngine', () => {
       })
     })
 
+    describe('detectJava', () => {
+      /**
+       * Feature: dev-tools-manager, Property 1: Tool Detection Consistency
+       */
+      it('should return a valid ToolInfo structure', async () => {
+        const result = await engine.detectJava()
+
+        expect(result).toHaveProperty('name', 'java')
+        expect(result).toHaveProperty('displayName', 'Java')
+        expect(result).toHaveProperty('category', 'runtime')
+        expect(result).toHaveProperty('isInstalled')
+      })
+    })
+
     describe('detectPython', () => {
       /**
        * Feature: dev-tools-manager, Property 1: Tool Detection Consistency
@@ -235,6 +249,9 @@ describe('DetectionEngine', () => {
 
         const pythonResult = await engine.detectTool('python')
         expect(pythonResult.name).toBe('python')
+
+        const javaResult = await engine.detectTool('java')
+        expect(javaResult.name).toBe('java')
       })
 
       it('should handle case-insensitive tool names', async () => {
