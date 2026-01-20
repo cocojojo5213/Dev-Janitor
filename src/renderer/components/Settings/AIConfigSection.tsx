@@ -147,12 +147,12 @@ export const AIConfigSection: React.FC = () => {
   }
 
   const recommendedOptions = [
-    { value: 'gpt-5', label: 'GPT-5 (推荐 - 最强编码能力)' },
-    { value: 'gpt-5-mini', label: 'GPT-5 Mini (快速且经济)' },
-    { value: 'gpt-5-nano', label: 'GPT-5 Nano (超快超省)' },
-    { value: 'o3', label: 'o3 (推理增强 - 复杂问题)' },
-    { value: 'o4-mini', label: 'o4-mini (推理增强 - 经济版)' },
-    { value: 'gpt-4.1', label: 'GPT-4.1 (上一代稳定版)' },
+    { value: 'gpt-5', label: t('settings.aiModelLabel.gpt-5') },
+    { value: 'gpt-5-mini', label: t('settings.aiModelLabel.gpt-5-mini') },
+    { value: 'gpt-5-nano', label: t('settings.aiModelLabel.gpt-5-nano') },
+    { value: 'o3', label: t('settings.aiModelLabel.o3') },
+    { value: 'o4-mini', label: t('settings.aiModelLabel.o4-mini') },
+    { value: 'gpt-4.1', label: t('settings.aiModelLabel.gpt-4.1') },
   ]
 
   const modelOptions = fetchedModels.length > 0
@@ -255,10 +255,10 @@ export const AIConfigSection: React.FC = () => {
             tooltip={t('settings.aiProviderTooltip', '选择 AI 服务提供商')}
           >
             <Select onChange={(val) => setProvider(val)}>
-              <Option value="openai">OpenAI</Option>
-              <Option value="custom">Custom (OpenAI 兼容)</Option>
-              <Option value="anthropic" disabled>Anthropic (即将支持)</Option>
-              <Option value="local" disabled>本地模型 (即将支持)</Option>
+              <Option value="openai">{t('settings.aiProviderLabel.openai')}</Option>
+              <Option value="custom">{t('settings.aiProviderLabel.custom')}</Option>
+              <Option value="anthropic" disabled>{t('settings.aiProviderLabel.anthropic')}</Option>
+              <Option value="local" disabled>{t('settings.aiProviderLabel.local')}</Option>
             </Select>
           </Form.Item>
 
@@ -370,12 +370,12 @@ export const AIConfigSection: React.FC = () => {
           {/* Model Info Alert */}
           <Form.Item>
             <Alert
-              message="模型说明 (2026年1月)"
+              message={t('settings.modelDescription.title')}
               description={
                 <ul style={{ margin: 0, paddingLeft: 16 }}>
-                  <li>GPT-5: 400K 上下文，最强编码能力，支持 verbosity 参数</li>
-                  <li>o3/o4-mini: 推理增强模型，适合复杂逻辑问题</li>
-                  <li>注意: GPT-5 不支持自定义 temperature，使用默认值 1</li>
+                  <li>{t('settings.modelDescription.item.0')}</li>
+                  <li>{t('settings.modelDescription.item.1')}</li>
+                  <li>{t('settings.modelDescription.item.2')}</li>
                 </ul>
               }
               type="info"

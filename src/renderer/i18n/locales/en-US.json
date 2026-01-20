@@ -53,9 +53,11 @@
     "subtitle": "Detected development tools on your system",
     "installed": "Installed",
     "notInstalled": "Not Installed",
+    "name": "Name",
     "version": "Version",
     "path": "Path",
     "installMethod": "Install Method",
+    "status": "Status",
     "category": "Category",
     "detectionFailed": "Detection Failed",
     "viewDetails": "View Details",
@@ -242,7 +244,29 @@
     "aiConfigSavedDesc": "AI assistant configuration updated. You can now use AI enhancement features.",
     "helpLinks": "Help Links",
     "getOpenAIKey": "Get OpenAI API Key",
-    "viewModels": "View Available Models"
+    "viewModels": "View Available Models",
+    "aiModelLabel": {
+      "gpt-5": "GPT-5 (Recommended - Strongest Coding Capability)",
+      "gpt-5-mini": "GPT-5 Mini (Fast and Cost-effective)",
+      "gpt-5-nano": "GPT-5 Nano (Ultra-fast and Ultra-energy-efficient)",
+      "o3": "o3 (Reasoning Enhancement - Complex Problems)",
+      "o4-mini": "o4-mini (Reasoning Enhancement - Economy Edition)",
+      "gpt-4.1": "GPT-4.1 (The Stable Version of the Previous Generation)"
+    },
+    "aiProviderLabel": {
+      "openai": "OpenAI",
+      "custom": "Custom (Compatible with OpenAI)",
+      "anthropic": "Anthropic (Coming Soon)",
+      "local": "Local model (Coming Soon)"
+    },
+    "modelDescription": {
+      "title": "Model Description (January 2026)",
+      "item": [
+        "GPT-5: 400K context, strongest encoding capability, supports verbosity parameter.",
+        "o3/o4-mini: An inference-enhanced model, suitable for complex logical problems.",
+        "Note: GPT-5 does not support custom temperature. The default value of 1 will be used."
+      ]
+    }
   },
   "errors": {
     "detectionFailed": "Failed to detect tools",
