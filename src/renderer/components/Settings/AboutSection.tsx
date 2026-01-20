@@ -32,7 +32,11 @@ import {
 } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 
+declare const __APP_VERSION__: string
+
 const { Title, Text, Paragraph, Link } = Typography
+
+const appVersion = __APP_VERSION__
 
 // ============================================================================
 // Application Info
@@ -40,7 +44,7 @@ const { Title, Text, Paragraph, Link } = Typography
 
 const APP_INFO = {
   name: 'Dev Janitor',
-  version: '1.0.0',
+  version: appVersion,
   author: 'cocojojo5213',
   license: 'MIT with Commons Clause',
   repository: 'https://github.com/cocojojo5213/Dev-Janitor',
