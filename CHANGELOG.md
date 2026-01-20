@@ -5,18 +5,10 @@ All notable changes to Dev Janitor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.7.0] - 2026-01-20
+## [Unreleased]
 
-### Added
-- **AI CLI Tools Management** (NEW!): New dedicated view for managing AI coding assistants
-  - **Codex** (OpenAI): AI coding agent that runs locally
-  - **Claude Code** (Anthropic): Agentic coding tool from Anthropic
-  - **Gemini CLI** (Google): AI agent that brings Gemini to your terminal
-  - **OpenCode** (SST): Open source AI coding agent
-  - One-click install, update, and uninstall via npm
-  - Version detection and installation status display
-  - Quick access to homepage and config folder
-  - Full i18n support (English/Chinese)
+### Planned
+- See [ROADMAP.md](ROADMAP.md) for upcoming features
 
 ---
 
@@ -351,7 +343,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[1.7.0]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.0
+[Unreleased]: https://github.com/cocojojo5213/Dev-Janitor/compare/v1.6.2...HEAD
 [1.6.1]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.6.1
 [1.5.5]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.5.5
 [1.5.4]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.5.4

@@ -133,9 +133,9 @@ Download the latest release for your platform from the [Releases](https://github
 
 | Platform | Download |
 |----------|----------|
-| Windows | `Dev-Janitor-Setup-1.7.0.exe` |
-| macOS | `Dev-Janitor-1.7.0.dmg` |
-| Linux | `Dev-Janitor-1.7.0.AppImage` |
+| Windows | `Dev-Janitor-Setup-1.6.2.exe` |
+| macOS | `Dev-Janitor-1.6.2.dmg` |
+| Linux | `Dev-Janitor-1.6.2.AppImage` |
 
 ### macOS Troubleshooting
 

@@ -56,11 +56,11 @@ Create a cartoon-style hand-drawn infographic with the rules above, using nano b
 
 ---
 
-Dev Janitor v1.2.0 - 开发清道夫
+Dev Janitor v1.6.2 - 开发清道夫
 A cross-platform desktop app for managing development tools
 
 🔍 工具检测 Tool Detection
-- 自动扫描 19+ 开发工具
+- 自动扫描 36+ 开发工具
 - Node.js, Python, Java, Go, Rust, Docker...
 - 版本信息 + 安装路径
 
@@ -97,14 +97,12 @@ Electron 33 + React 18 + TypeScript + Ant Design
 
 | 版本 | 日期 | 更新内容 |
 |------|------|----------|
-| v1.2.0 | 2026-01-17 | 添加一键包更新功能 |
-| v1.1.0 | 2026-01-17 | 添加自定义 AI Provider |
-| v1.0.0 | 2024-01-XX | 初始版本 |
+| v1.6.2 | 2026-01-21 | 当前版本 |
 
 ---
 
 ## 生成的图片
 
 生成后请保存为：
-- `docs/screenshots/infographic-v1.2.0.png`
+- `docs/screenshots/infographic-v1.6.2.png`
 - 可选：更新 `docs/screenshots/demo.gif` 或添加到 README
