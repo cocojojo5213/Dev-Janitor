@@ -235,6 +235,9 @@ describe('DetectionEngine', () => {
 
         const pythonResult = await engine.detectTool('python')
         expect(pythonResult.name).toBe('python')
+
+        const mvnResult = await engine.detectTool('mvn')
+        expect(mvnResult.name).toBe('mvn')
       })
 
       it('should handle case-insensitive tool names', async () => {
@@ -266,7 +269,7 @@ describe('DetectionEngine', () => {
         const results = await engine.detectAllTools()
 
         expect(Array.isArray(results)).toBe(true)
-        expect(results.length).toBe(36) // 12 runtimes + 11 package managers + 4 dev tools + 5 cloud tools + 4 version managers
+        expect(results.length).toBe(37) // 12 runtimes + 11 package managers + 5 dev tools + 5 cloud tools + 4 version managers
         for (const tool of results) {
           expect(tool).toHaveProperty('name')
           expect(tool).toHaveProperty('displayName')

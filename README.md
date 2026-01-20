@@ -40,7 +40,7 @@ Dev Janitor is a powerful desktop application designed to help developers detect
   - **Package Managers**: npm, pip, Composer, Yarn, pnpm, Cargo, RubyGems, Homebrew, Chocolatey, Scoop, winget
   - **Cloud Tools**: AWS CLI, Azure CLI, Google Cloud SDK, Helm, Ansible
   - **Version Managers**: nvm, pyenv, rbenv, SDKMAN
-  - **Dev Tools**: Git, Docker, Kubernetes CLI, Terraform
+  - **Dev Tools**: Git, Docker, Kubernetes CLI, Terraform, Maven
 - **Version Information**: Displays version numbers and installation paths
 - **Installation Status**: Clear visual indicators for installed vs unavailable tools
 - **Windows Compatibility**: Special handling for Windows Python Launcher (`py` command)

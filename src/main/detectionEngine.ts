@@ -744,6 +744,9 @@ export class DetectionEngine {
       case 'composer':
         result = await this.detectComposer()
         break
+      case 'mvn':
+        result = await this.detectCustomTool('mvn', 'Maven', '-version')
+        break
       default:
         result = await this.detectCustomTool(toolName)
     }
@@ -801,6 +804,7 @@ export class DetectionEngine {
       () => this.detectCustomTool('docker', 'Docker', '--version'),
       () => this.detectCustomTool('kubectl', 'Kubernetes CLI', 'version --client'),
       () => this.detectCustomTool('terraform', 'Terraform', '--version'),
+      () => this.detectCustomTool('mvn', 'Maven', '-version'),
 
       // Cloud Tools (Task 8, Requirement 5.3)
       () => this.detectCustomTool('aws', 'AWS CLI', '--version'),
