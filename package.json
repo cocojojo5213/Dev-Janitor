@@ -1,7 +1,7 @@
 {
   "name": "dev-janitor",
   "private": true,
-  "version": "1.7.0",
+  "version": "1.6.2",
   "description": "Dev Janitor - A cross-platform desktop application for managing development tools and dependencies",
   "author": "",
   "homepage": "https://github.com/cocojojo5213/Dev-Janitor",
