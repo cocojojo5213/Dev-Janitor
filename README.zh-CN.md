@@ -48,6 +48,17 @@ Dev Janitor（开发清道夫）是一款功能强大的桌面应用程序，旨
 - **检测缓存**：5 分钟缓存提升性能，支持强制刷新选项
 - **检测摘要**：详细的摘要包含成功/失败计数和耗时信息
 
+### 🤖 AI CLI 工具管理（新功能！）
+- **统一管理**：在一个地方管理流行的 AI 编程助手
+- **支持的工具**：
+  - **Codex**（OpenAI）：本地运行的 AI 编程代理
+  - **Claude Code**（Anthropic）：Anthropic 的智能编程工具
+  - **Gemini CLI**（Google）：将 Gemini 带到终端的 AI 代理
+  - **OpenCode**（SST）：开源 AI 编程代理
+- **一键操作**：一键安装、更新和卸载
+- **状态检测**：自动检测已安装的工具和版本
+- **快速访问**：直接打开主页或配置文件夹
+
 ### 🤖 AI 助手（新功能！）
 - **本地分析**：免费、离线的智能分析，无需 API Key
   - 检测过时的工具版本（基于 Node.js 22 LTS、Python 3.12+ 标准）
@@ -112,9 +123,9 @@ Dev Janitor（开发清道夫）是一款功能强大的桌面应用程序，旨
 
 | 平台 | 下载 |
 |------|------|
-| Windows | `Dev-Janitor-Setup-1.6.0.exe` |
-| macOS | `Dev-Janitor-1.6.0.dmg` |
-| Linux | `Dev-Janitor-1.6.0.AppImage` |
+| Windows | `Dev-Janitor-Setup-1.7.0.exe` |
+| macOS | `Dev-Janitor-1.7.0.dmg` |
+| Linux | `Dev-Janitor-1.7.0.AppImage` |
 
 ### macOS 故障排除
 

@@ -48,7 +48,18 @@ Dev Janitor is a powerful desktop application designed to help developers detect
 - **Detection Caching**: 5-minute cache for improved performance with force-refresh option
 - **Detection Summary**: Detailed summary with success/failure counts and timing information
 
-### 🤖 AI Assistant (NEW!)
+### 🤖 AI CLI Tools Management (NEW!)
+- **Unified Management**: Manage popular AI coding assistants from one place
+- **Supported Tools**:
+  - **Codex** (OpenAI): AI coding agent that runs locally
+  - **Claude Code** (Anthropic): Agentic coding tool from Anthropic
+  - **Gemini CLI** (Google): AI agent that brings Gemini to your terminal
+  - **OpenCode** (SST): Open source AI coding agent
+- **One-Click Operations**: Install, update, and uninstall with a single click
+- **Status Detection**: Automatically detect installed tools and versions
+- **Quick Access**: Open homepage or config folder directly
+
+### 🤖 AI Assistant
 - **Local Analysis**: Free, offline intelligent analysis without API key
   - Detects outdated tool versions (Node.js 22 LTS, Python 3.12+ standards)
   - Finds PATH duplicates and conflicts
@@ -122,9 +133,9 @@ Download the latest release for your platform from the [Releases](https://github
 
 | Platform | Download |
 |----------|----------|
-| Windows | `Dev-Janitor-Setup-1.6.0.exe` |
-| macOS | `Dev-Janitor-1.6.0.dmg` |
-| Linux | `Dev-Janitor-1.6.0.AppImage` |
+| Windows | `Dev-Janitor-Setup-1.7.0.exe` |
+| macOS | `Dev-Janitor-1.7.0.dmg` |
+| Linux | `Dev-Janitor-1.7.0.AppImage` |
 
 ### macOS Troubleshooting
 
