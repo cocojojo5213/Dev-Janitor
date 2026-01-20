@@ -120,7 +120,7 @@ const ToolDetailModal: React.FC<ToolDetailModalProps> = ({
         className="mb-4"
       >
         {/* Name */}
-        <Descriptions.Item label={<Text strong>名称</Text>}>
+        <Descriptions.Item label={<Text strong>{t('tools.name')}</Text>}>
           <Text>{tool.displayName || tool.name}</Text>
         </Descriptions.Item>
 
@@ -159,7 +159,7 @@ const ToolDetailModal: React.FC<ToolDetailModalProps> = ({
         )}
 
         {/* Status */}
-        <Descriptions.Item label={<Text strong>状态</Text>}>
+        <Descriptions.Item label={<Text strong>{t('tools.status')}</Text>}>
           {tool.isInstalled ? (
             <Tag icon={<CheckCircleOutlined />} color="success">
               {t('tools.installed')}

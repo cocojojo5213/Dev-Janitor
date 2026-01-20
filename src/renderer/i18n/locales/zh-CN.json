@@ -53,9 +53,11 @@
     "subtitle": "系统中检测到的开发工具",
     "installed": "已安装",
     "notInstalled": "未安装",
+    "name": "名称",
     "version": "版本",
     "path": "路径",
     "installMethod": "安装方式",
+    "status": "状态",
     "category": "分类",
     "detectionFailed": "检测失败",
     "viewDetails": "查看详情",
@@ -243,7 +245,29 @@
     "aiConfigSavedDesc": "AI 助手配置已更新，现在可以使用 AI 增强功能了。",
     "helpLinks": "帮助链接",
     "getOpenAIKey": "获取 OpenAI API Key",
-    "viewModels": "查看可用模型"
+    "viewModels": "查看可用模型",
+    "aiModelLabel": {
+      "gpt-5": "GPT-5 (推荐 - 最强编码能力)",
+      "gpt-5-mini": "GPT-5 Mini (快速且经济)",
+      "gpt-5-nano": "GPT-5 Nano (超快超省)",
+      "o3": "o3 (推理增强 - 复杂问题)",
+      "o4-mini": "o4-mini (推理增强 - 经济版)",
+      "gpt-4.1": "GPT-4.1 (上一代稳定版)"
+    },
+    "aiProviderLabel": {
+      "openai": "OpenAI",
+      "custom": "自定义 (OpenAI 兼容)",
+      "anthropic": "Anthropic (即将支持)",
+      "local": "本地模型 (即将支持)"
+    },
+    "modelDescription": {
+      "title": "模型说明 (2026年1月)",
+      "item": [
+        "GPT-5: 400K 上下文，最强编码能力，支持 verbosity 参数",
+        "o3/o4-mini: 推理增强模型，适合复杂逻辑问题",
+        "注意: GPT-5 不支持自定义 temperature，使用默认值 1"
+      ]
+    }
   },
   "errors": {
     "detectionFailed": "工具检测失败",
