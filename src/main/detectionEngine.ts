@@ -855,6 +855,7 @@ export class DetectionEngine {
       () => this.detectCustomTool('pyenv', 'pyenv', '--version'),
       () => this.detectCustomTool('rbenv', 'rbenv', '--version'),
       () => this.detectCustomTool('sdk', 'SDKMAN', 'version'),
+      () => this.detectCustomTool('uv', 'uv', '--version'),
     ]
 
     // Run with controlled concurrency (3 at a time) to avoid system overload
