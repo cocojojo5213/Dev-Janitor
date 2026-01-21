@@ -46,7 +46,7 @@ Dev Janitor（开发清道夫）是一款功能强大的桌面应用程序，旨
   - **包管理器**：npm、pip、Composer、Yarn、pnpm、Cargo、RubyGems、Homebrew、Chocolatey、Scoop、winget
   - **云工具**：AWS CLI、Azure CLI、Google Cloud SDK、Helm、Ansible
   - **版本管理器**：nvm、pyenv、rbenv、SDKMAN、uv
-  - **开发工具**：Git、Docker、Kubernetes CLI、Terraform、Maven
+  - **开发工具**：Git、Docker、Kubernetes CLI、Terraform、Maven、SVN
 - **版本信息**：显示版本号和安装路径
 - **安装状态**：清晰的视觉指示器区分已安装和未安装的工具
 - **Windows 兼容**：特别处理 Windows Python 启动器（`py` 命令）
