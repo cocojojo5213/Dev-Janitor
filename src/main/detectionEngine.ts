@@ -919,7 +919,7 @@ export class DetectionEngine {
 
   /**
    * Detect all AI CLI tools
-   * Supports: Codex (OpenAI), Claude Code (Anthropic), Gemini CLI (Google), OpenCode (SST)
+   * Supports: Codex (OpenAI), Claude Code (Anthropic), Gemini CLI (Google), OpenCode (SST), iFlow CLI (Alibaba)
    */
   async detectAICLITools(): Promise<AICLITool[]> {
     const aiTools: AICLITool[] = []
@@ -974,6 +974,16 @@ export class DetectionEngine {
         homepage: 'https://opencode.ai',
         provider: 'sst',
         configPath: isWindows() ? '%USERPROFILE%\\.opencode' : '~/.opencode',
+      },
+      {
+        name: 'iflow',
+        displayName: 'iFlow CLI',
+        command: 'iflow',
+        packageName: 'iflow-cli',
+        description: 'Free terminal-based AI assistant from Alibaba for code analysis and automation',
+        homepage: 'https://platform.iflow.cn',
+        provider: 'other',
+        configPath: isWindows() ? '%USERPROFILE%\\.iflow' : '~/.iflow',
       },
     ]
 

@@ -61,6 +61,7 @@ Dev Janitor（开发清道夫）是一款功能强大的桌面应用程序，旨
   - **Claude Code**（Anthropic）：Anthropic 的智能编程工具
   - **Gemini CLI**（Google）：将 Gemini 带到终端的 AI 代理
   - **OpenCode**（SST）：开源 AI 编程代理
+  - **iFlow CLI**（阿里巴巴）：免费的终端 AI 助手，用于代码分析和自动化
 - **一键操作**：一键安装、更新和卸载
 - **状态检测**：自动检测已安装的工具和版本
 - **快速访问**：直接打开主页或配置文件夹

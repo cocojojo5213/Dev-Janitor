@@ -61,6 +61,7 @@ Dev Janitor is a powerful desktop application designed to help developers detect
   - **Claude Code** (Anthropic): Agentic coding tool from Anthropic
   - **Gemini CLI** (Google): AI agent that brings Gemini to your terminal
   - **OpenCode** (SST): Open source AI coding agent
+  - **iFlow CLI** (Alibaba): Free terminal-based AI assistant for code analysis and automation
 - **One-Click Operations**: Install, update, and uninstall with a single click
 - **Status Detection**: Automatically detect installed tools and versions
 - **Quick Access**: Open homepage or config folder directly
