@@ -842,6 +842,7 @@ export class DetectionEngine {
       () => this.detectCustomTool('kubectl', 'Kubernetes CLI', 'version --client'),
       () => this.detectCustomTool('terraform', 'Terraform', '--version'),
       () => this.detectCustomTool('mvn', 'Maven', '-version'),
+      () => this.detectCustomTool('svn', 'SVN', '--version'),
 
       // Cloud Tools (Task 8, Requirement 5.3)
       () => this.detectCustomTool('aws', 'AWS CLI', '--version'),

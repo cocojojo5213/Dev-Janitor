@@ -286,7 +286,7 @@ describe('DetectionEngine', () => {
         const results = await engine.detectAllTools()
 
         expect(Array.isArray(results)).toBe(true)
-        expect(results.length).toBe(37) // 12 runtimes + 11 package managers + 5 dev tools + 5 cloud tools + 4 version managers
+        expect(results.length).toBe(38) // 12 runtimes + 11 package managers + 6 dev tools + 5 cloud tools + 4 version managers
         for (const tool of results) {
           expect(tool).toHaveProperty('name')
           expect(tool).toHaveProperty('displayName')

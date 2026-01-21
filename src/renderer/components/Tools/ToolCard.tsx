@@ -51,6 +51,7 @@ const getToolIcon = (toolName: string): string => {
     'pip': '📦',
     'composer': '🎼',
     'git': '🔀',
+    'svn': '🔀',
     'docker': '🐳',
     'java': '☕',
     'go': '🔵',
