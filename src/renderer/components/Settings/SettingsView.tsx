@@ -98,12 +98,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className = '' }) =>
     <div className={`p-6 ${className}`}>
       {/* Page Header */}
       <div className="mb-6">
-        <Space align="center" className="mb-2">
-          <SettingOutlined className="text-2xl text-blue-500" />
-          <Title level={2} className="!m-0">
-            {t('settings.title')}
-          </Title>
-        </Space>
+        <Title level={3}>{t('settings.title')}</Title>
         <Text type="secondary">{t('settings.subtitle')}</Text>
       </div>
 
