@@ -9,6 +9,9 @@
  * Validates: Requirements 1.2-1.9, 2.1-2.5
  */
 
+import { promises as fs } from 'fs'
+import * as path from 'path'
+import * as os from 'os'
 import { ToolInfo, DetectionSummary, CommandResult, AICLITool } from '../shared/types'
 import {
   CommandExecutor,
@@ -829,10 +832,6 @@ export class DetectionEngine {
     // 2. Special handling for macOS/Linux (nvm is a shell script)
     if (!isWindows()) {
       try {
-        const fs = await import('fs')
-        const path = await import('path')
-        const os = await import('os')
-        
         // Check common locations
         // 1. NVM_DIR environment variable
         // 2. ~/.nvm directory
@@ -842,7 +841,7 @@ export class DetectionEngine {
 
         // Check if nvm.sh exists
         try {
-          await fs.promises.access(nvmSh)
+          await fs.access(nvmSh)
           
           // Found nvm script, try to get version by sourcing it
           // Use bash explicitly as nvm is typically a bash/zsh script
