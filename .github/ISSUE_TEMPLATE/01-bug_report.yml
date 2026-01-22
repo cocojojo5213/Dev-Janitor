@@ -1,0 +1,59 @@
+name: 问题反馈
+description: 软件问题反馈
+title: "[Bug] "
+labels: ["bug"]
+
+body:
+  - type: checkboxes
+    id: searched
+    attributes:
+      label: 已经搜索过 Issues
+      description: 请确认你已经在 Issues 中搜索过，未发现重复问题
+      options:
+        - label: 我已经搜索过 Issues，没有发现重复问题
+    validations:
+      required: true
+
+  - type: input
+    id: system
+    attributes:
+      label: 操作系统
+      description: 例如：Windows 10 22H2、macOS Mojave、Ubuntu、CentOS 等
+      placeholder: Windows 10 22H2 / macOS Mojave / Linux ...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: 软件安装版本
+      description: 请填写你当前使用的软件版本
+      placeholder: v1.6.0 / v1.7.2
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题简述及复现流程
+      description: 请详细描述你遇到的问题，并提供复现步骤
+      placeholder: |
+        1. 打开软件
+        2. 点击 xxx
+        3. 出现错误 ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 其他补充
+      description: 如果你有额外信息，请在此填写
+      placeholder: 可选
+
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: 是否愿意提交 PR 修复当前 Issue
+      options:
+        - label: 我愿意尝试提交 PR

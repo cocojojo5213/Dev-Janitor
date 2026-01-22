@@ -1,0 +1,31 @@
+name: 其他
+description: 其他类型反馈、建议或讨论
+title: "[Question] "
+labels: ["question"]
+
+body:
+  - type: checkboxes
+    id: searched
+    attributes:
+      label: 已经搜索过 Issues
+      description: 请确认你已经在 Issues 中搜索过，未发现重复问题
+      options:
+        - label: 我已经搜索过 Issues，没有发现重复
+    validations:
+      required: true
+
+  - type: textarea
+    id: content
+    attributes:
+      label: 内容
+      description: 请填写你的反馈、建议或讨论内容
+      placeholder: 请描述你的问题或想法
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 其他补充
+      description: 如果你有额外信息，请在此填写
+      placeholder: 可选
