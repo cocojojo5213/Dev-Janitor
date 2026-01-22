@@ -23,6 +23,10 @@
 
 ---
 
+<p align="center">
+  <img src="docs/hero-1.webp" alt="Dev Janitor 预览" width="800">
+</p>
+
 ## ✨ 功能特性
 
 | 功能 | 说明 |

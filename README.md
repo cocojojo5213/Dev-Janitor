@@ -23,6 +23,10 @@
 
 ---
 
+<p align="center">
+  <img src="docs/hero-2.webp" alt="Dev Janitor Hero" width="800">
+</p>
+
 ## ✨ Features
 
 | Feature | Description |
