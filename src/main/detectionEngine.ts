@@ -795,6 +795,96 @@ export class DetectionEngine {
   }
 
   /**
+   * Detect nvm (Node Version Manager)
+   * 
+   * Special handling because nvm is a shell function/script, not a binary
+   * Validates: Requirement 5.4
+   */
+  async detectNVM(): Promise<ToolInfo> {
+    const name = 'nvm'
+    const displayName = 'nvm'
+    const category: ToolInfo['category'] = 'tool'
+
+    // 1. Try standard command execution (Works for nvm-windows or if properly in PATH)
+    try {
+      const versionResult = await this.executor.executeSafe('nvm --version')
+      if (versionResult.success) {
+        const { version } = parseVersion(getVersionOutput(versionResult))
+        const path = await this.executor.getToolPath('nvm')
+        
+        return {
+          name,
+          displayName,
+          version,
+          path,
+          isInstalled: true,
+          installMethod: detectInstallMethod(path),
+          category,
+        }
+      }
+    } catch {
+      // Continue to next method
+    }
+
+    // 2. Special handling for macOS/Linux (nvm is a shell script)
+    if (!isWindows()) {
+      try {
+        const fs = await import('fs')
+        const path = await import('path')
+        const os = await import('os')
+        
+        // Check common locations
+        // 1. NVM_DIR environment variable
+        // 2. ~/.nvm directory
+        const homeDir = os.homedir()
+        const nvmDir = process.env.NVM_DIR || path.join(homeDir, '.nvm')
+        const nvmSh = path.join(nvmDir, 'nvm.sh')
+
+        // Check if nvm.sh exists
+        try {
+          await fs.promises.access(nvmSh)
+          
+          // Found nvm script, try to get version by sourcing it
+          // Use bash explicitly as nvm is typically a bash/zsh script
+          // We need to source the script and then run nvm --version
+          const cmd = `bash -c 'source "${nvmSh}" && nvm --version'`
+          const versionResult = await this.executor.executeSafe(cmd)
+          
+          if (versionResult.success) {
+            const { version } = parseVersion(getVersionOutput(versionResult))
+            return {
+              name,
+              displayName,
+              version,
+              path: nvmDir,
+              isInstalled: true,
+              installMethod: 'manual',
+              category,
+            }
+          }
+          
+          // If execution failed but file exists, report as installed with unknown version
+          return {
+            name,
+            displayName,
+            version: null,
+            path: nvmDir,
+            isInstalled: true,
+            installMethod: 'manual',
+            category,
+          }
+        } catch {
+          // nvm.sh not found
+        }
+      } catch {
+        // Error during fs operations
+      }
+    }
+
+    return createUnavailableTool(name, displayName, category)
+  }
+
+  /**
    * Detect all supported tools with controlled concurrency
    * 
    * Property 11: Partial Failure Resilience
@@ -852,7 +942,7 @@ export class DetectionEngine {
       () => this.detectCustomTool('ansible', 'Ansible', '--version'),
 
       // Version Managers (Task 9, Requirement 5.4)
-      () => this.detectCustomTool('nvm', 'nvm', '--version'),
+      () => this.detectNVM(),
       () => this.detectCustomTool('pyenv', 'pyenv', '--version'),
       () => this.detectCustomTool('rbenv', 'rbenv', '--version'),
       () => this.detectCustomTool('sdk', 'SDKMAN', 'version'),
@@ -1010,17 +1100,12 @@ export class DetectionEngine {
     configPath: string
   }): Promise<AICLITool> {
     try {
-      // First, check if the npm package is actually installed globally
-      // This is more reliable than just checking if the command exists
-      const npmListResult = await this.executor.executeSafe(`npm list -g ${def.packageName} --depth=0`)
-      const isInstalledViaNpm = npmListResult.success && !npmListResult.stdout.includes('(empty)')
-      
-      // Try to get version
+      // 1. First check if the command is executable
+      // This is the primary check - if the command works, it's installed
       const versionResult = await this.executor.executeSafe(`${def.command} --version`)
       
-      // Tool is only considered installed if BOTH the command works AND npm shows it's installed
-      // This prevents false positives from cached commands after uninstallation
-      if (!versionResult.success || !isInstalledViaNpm) {
+      // If command fails, it's definitely not installed/working
+      if (!versionResult.success) {
         return {
           name: def.name,
           displayName: def.displayName,
@@ -1037,14 +1122,11 @@ export class DetectionEngine {
         }
       }
 
-      // Parse version from output
+      // 2. Determine installation details
       const output = versionResult.stdout || versionResult.stderr
       const { version } = parseVersion(output)
-      
-      // Get installation path
       const path = await this.executor.getToolPath(def.command)
       
-      // Determine install method
       let installMethod: AICLITool['installMethod'] = 'unknown'
       if (path) {
         if (path.includes('npm') || path.includes('node_modules')) {
@@ -1053,6 +1135,19 @@ export class DetectionEngine {
           installMethod = 'brew'
         } else if (path.includes('.opencode') || path.includes('bin')) {
           installMethod = 'script'
+        }
+      }
+
+      // 3. Optional: Cross-check with npm list only if path suggests npm
+      // We don't make this a hard requirement anymore to support other install methods
+      if (installMethod === 'npm' || installMethod === 'unknown') {
+        try {
+          const npmListResult = await this.executor.executeSafe(`npm list -g ${def.packageName} --depth=0`)
+          if (npmListResult.success && !npmListResult.stdout.includes('(empty)')) {
+            installMethod = 'npm'
+          }
+        } catch {
+          // Ignore npm check failures, rely on command existence
         }
       }
 
