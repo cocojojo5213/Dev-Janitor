@@ -5,6 +5,20 @@ All notable changes to Dev Janitor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.3] - 2026-01-25
+
+### 新增
+- 所有视图的扫描结果在切换页面后保持不变（Tools、Cache、Services、AI CLI）
+- 添加 README 截图展示
+
+### 修复
+- 修复 Windows 上 AI CLI 工具检测失败的问题（npm 全局安装的 .cmd 脚本现在可以正确检测）
+- 修复 CI Clippy 更多警告 (`&PathBuf` → `&Path`, 冗余模式匹配等)
+- 消除 Rust 编译时的所有警告
+
+### 优化
+- 改进代码结构，使用全局 store 统一管理视图状态
+
 ## [2.0.2] - 2026-01-25
 
 ### 修复

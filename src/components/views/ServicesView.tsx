@@ -1,14 +1,18 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    getDevProcesses, getPorts, killProcess,
-    ProcessInfo, PortInfo
-} from '../../ipc/commands';
+import { getDevProcesses, getPorts, killProcess } from '../../ipc/commands';
+import { useAppStore } from '../../store';
 
 export function ServicesView() {
     const { t } = useTranslation();
-    const [processes, setProcesses] = useState<ProcessInfo[]>([]);
-    const [ports, setPorts] = useState<PortInfo[]>([]);
+
+    // Use global store for data that should persist
+    const processes = useAppStore((state) => state.servicesProcesses);
+    const setProcesses = useAppStore((state) => state.setServicesProcesses);
+    const ports = useAppStore((state) => state.servicesPorts);
+    const setPorts = useAppStore((state) => state.setServicesPorts);
+
+    // Local state for transient UI
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -27,7 +31,7 @@ export function ServicesView() {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [setProcesses]);
 
     const handleRefreshPorts = useCallback(async () => {
         setIsLoading(true);
@@ -41,7 +45,7 @@ export function ServicesView() {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [setPorts]);
 
     const handleKillProcess = async (pid: number, name: string) => {
         if (!confirm(t('services.confirm_kill', { name, pid }))) {

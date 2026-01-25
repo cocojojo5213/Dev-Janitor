@@ -71,17 +71,16 @@ impl PackageManager for PipManager {
             Err(_) => return packages,
         };
 
-        // Get outdated packages
-        let outdated_output =
-            run_pip_command(&self.command, &["list", "--outdated", "--format=json"])
-                .unwrap_or_default();
-        let outdated: Vec<PipOutdatedPackage> =
-            serde_json::from_str(&outdated_output).unwrap_or_default();
+        // Skip outdated check for now - it requires network and is very slow
+        // TODO: Move to async background task
+        // let outdated_output =
+        //     run_pip_command(&self.command, &["list", "--outdated", "--format=json"])
+        //         .unwrap_or_default();
+        // let outdated: Vec<PipOutdatedPackage> =
+        //     serde_json::from_str(&outdated_output).unwrap_or_default();
 
-        let outdated_map: std::collections::HashMap<String, String> = outdated
-            .into_iter()
-            .map(|p| (p.name.to_lowercase(), p.latest_version))
-            .collect();
+        let outdated_map: std::collections::HashMap<String, String> =
+            std::collections::HashMap::new();
 
         for pkg in list {
             // Skip common system packages
@@ -125,6 +124,20 @@ impl PackageManager for PipManager {
 }
 
 fn run_pip_command(pip_cmd: &str, args: &[&str]) -> Option<String> {
+    // On Windows, pip may need to run via cmd /C
+    #[cfg(target_os = "windows")]
+    let output = {
+        let pip_args = std::iter::once(pip_cmd)
+            .chain(args.iter().copied())
+            .collect::<Vec<_>>()
+            .join(" ");
+        command_no_window("cmd")
+            .args(["/C", &pip_args])
+            .output()
+            .ok()?
+    };
+
+    #[cfg(not(target_os = "windows"))]
     let output = command_no_window(pip_cmd).args(args).output().ok()?;
 
     if output.status.success() {

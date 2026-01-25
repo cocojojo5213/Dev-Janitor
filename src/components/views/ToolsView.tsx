@@ -1,10 +1,16 @@
 import { useState, useCallback, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { scanTools, uninstallTool, ToolInfo } from '../../ipc/commands';
+import { scanTools, uninstallTool } from '../../ipc/commands';
+import { useAppStore } from '../../store';
 
 export function ToolsView() {
     const { t } = useTranslation();
-    const [tools, setTools] = useState<ToolInfo[]>([]);
+
+    // Use global store for data that should persist
+    const tools = useAppStore((state) => state.toolsData);
+    const setTools = useAppStore((state) => state.setToolsData);
+
+    // Local state for transient UI
     const [isScanning, setIsScanning] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -24,7 +30,7 @@ export function ToolsView() {
         } finally {
             setIsScanning(false);
         }
-    }, []);
+    }, [setTools]);
 
     const handleUninstall = async (toolId: string, toolName: string, path: string) => {
         if (!confirm(t('tools.confirm_uninstall', { name: toolName }))) {
@@ -38,7 +44,6 @@ export function ToolsView() {
         try {
             await uninstallTool(toolId, path);
             setSuccess(t('tools.success_uninstall', { name: toolName }));
-            // Refresh tools list after uninstall
             await handleScan();
         } catch (e) {
             setError(String(e));
@@ -66,7 +71,7 @@ export function ToolsView() {
         }
         acc[tool.category].push(tool);
         return acc;
-    }, {} as Record<string, ToolInfo[]>);
+    }, {} as Record<string, typeof tools>);
 
     const categoryNames: Record<string, string> = {
         runtime: t('tools.categories.runtime'),

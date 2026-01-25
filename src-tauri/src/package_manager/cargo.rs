@@ -87,6 +87,20 @@ impl PackageManager for CargoManager {
 }
 
 fn run_cargo_command(args: &[&str]) -> Option<String> {
+    // On Windows, run via cmd /C for consistency
+    #[cfg(target_os = "windows")]
+    let output = {
+        let cargo_args = std::iter::once("cargo")
+            .chain(args.iter().copied())
+            .collect::<Vec<_>>()
+            .join(" ");
+        command_no_window("cmd")
+            .args(["/C", &cargo_args])
+            .output()
+            .ok()?
+    };
+
+    #[cfg(not(target_os = "windows"))]
     let output = command_no_window("cargo").args(args).output().ok()?;
 
     let stdout = String::from_utf8_lossy(&output.stdout).to_string();

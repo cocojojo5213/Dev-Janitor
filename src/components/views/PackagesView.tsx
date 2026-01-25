@@ -1,16 +1,24 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { scanPackages, updatePackage, uninstallPackage, PackageInfo } from '../../ipc/commands';
+import { scanPackages, updatePackage, uninstallPackage } from '../../ipc/commands';
+import { useAppStore, PackageInfoStore } from '../../store';
 
 export function PackagesView() {
     const { t } = useTranslation();
-    const [packages, setPackages] = useState<PackageInfo[]>([]);
+
+    // Use global store for state that should persist across page switches
+    const packages = useAppStore((state) => state.packagesData);
+    const setPackages = useAppStore((state) => state.setPackagesData);
+    const filterManager = useAppStore((state) => state.packagesFilterManager);
+    const setFilterManager = useAppStore((state) => state.setPackagesFilterManager);
+    const filterOutdated = useAppStore((state) => state.packagesFilterOutdated);
+    const setFilterOutdated = useAppStore((state) => state.setPackagesFilterOutdated);
+
+    // Local state for transient UI states
     const [isScanning, setIsScanning] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [operatingPackage, setOperatingPackage] = useState<string | null>(null);
-    const [filterManager, setFilterManager] = useState<string>('all');
-    const [filterOutdated, setFilterOutdated] = useState(false);
 
     const handleScan = useCallback(async () => {
         setIsScanning(true);
@@ -25,7 +33,7 @@ export function PackagesView() {
         } finally {
             setIsScanning(false);
         }
-    }, []);
+    }, [setPackages]);
 
     const handleUpdate = async (manager: string, name: string) => {
         setOperatingPackage(`update-${manager}-${name}`);
@@ -80,7 +88,7 @@ export function PackagesView() {
         }
         acc[pkg.manager].push(pkg);
         return acc;
-    }, {} as Record<string, PackageInfo[]>);
+    }, {} as Record<string, PackageInfoStore[]>);
 
     const managerDisplayNames: Record<string, string> = {
         npm: t('packages.managers.npm'),

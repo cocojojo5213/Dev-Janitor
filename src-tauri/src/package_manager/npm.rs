@@ -60,10 +60,11 @@ impl PackageManager for NpmManager {
             Err(_) => return packages,
         };
 
-        // Get outdated packages
-        let outdated_output = run_npm_command(&["outdated", "-g", "--json"]).unwrap_or_default();
+        // Skip outdated check for now - it requires network and is slow
+        // TODO: Move to async background task
+        // let outdated_output = run_npm_command(&["outdated", "-g", "--json"]).unwrap_or_default();
         let outdated: std::collections::HashMap<String, NpmOutdatedPackage> =
-            serde_json::from_str(&outdated_output).unwrap_or_default();
+            std::collections::HashMap::new();
 
         if let Some(deps) = list.dependencies {
             for (name, pkg) in deps {
@@ -108,6 +109,20 @@ impl PackageManager for NpmManager {
 }
 
 fn run_npm_command(args: &[&str]) -> Option<String> {
+    // On Windows, npm is a .cmd file, so we need to run it via cmd /C
+    #[cfg(target_os = "windows")]
+    let output = {
+        let npm_args = std::iter::once("npm")
+            .chain(args.iter().copied())
+            .collect::<Vec<_>>()
+            .join(" ");
+        command_no_window("cmd")
+            .args(["/C", &npm_args])
+            .output()
+            .ok()?
+    };
+
+    #[cfg(not(target_os = "windows"))]
     let output = command_no_window("npm").args(args).output().ok()?;
 
     if output.status.success() {

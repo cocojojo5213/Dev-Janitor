@@ -1,21 +1,24 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    getAiCliTools, installAiTool, updateAiTool, uninstallAiTool,
-    AiCliTool
-} from '../../ipc/commands';
+import { getAiCliTools, installAiTool, updateAiTool, uninstallAiTool } from '../../ipc/commands';
+import { useAppStore, AiCliToolStore } from '../../store';
 
 export function AiCliView() {
     const { t } = useTranslation();
-    const [tools, setTools] = useState<AiCliTool[]>([]);
+
+    // Use global store for data that should persist
+    const tools = useAppStore((state) => state.aiCliToolsData);
+    const setTools = useAppStore((state) => state.setAiCliToolsData);
+
+    // Local state for transient UI
     const [isLoading, setIsLoading] = useState(false);
     const [isOperating, setIsOperating] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const getToolDisplayName = (tool: AiCliTool) =>
+    const getToolDisplayName = (tool: AiCliToolStore) =>
         t(`ai_cli.tools.${tool.id}.name`, { defaultValue: tool.name });
-    const getToolDescription = (tool: AiCliTool) =>
+    const getToolDescription = (tool: AiCliToolStore) =>
         t(`ai_cli.tools.${tool.id}.description`, { defaultValue: tool.description });
 
     const handleRefresh = useCallback(async () => {
@@ -30,9 +33,9 @@ export function AiCliView() {
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [setTools]);
 
-    const handleInstall = async (tool: AiCliTool) => {
+    const handleInstall = async (tool: AiCliToolStore) => {
         if (tool.install_command.startsWith('Download')) {
             window.open(tool.docs_url, '_blank');
             return;
@@ -59,7 +62,7 @@ export function AiCliView() {
         }
     };
 
-    const handleUpdate = async (tool: AiCliTool) => {
+    const handleUpdate = async (tool: AiCliToolStore) => {
         const toolName = getToolDisplayName(tool);
         if (!confirm(t('ai_cli.confirm_update', { name: toolName }))) {
             return;
@@ -81,7 +84,7 @@ export function AiCliView() {
         }
     };
 
-    const handleUninstall = async (tool: AiCliTool) => {
+    const handleUninstall = async (tool: AiCliToolStore) => {
         const toolName = getToolDisplayName(tool);
         if (!confirm(t('ai_cli.confirm_uninstall', { name: toolName }))) {
             return;
@@ -195,8 +198,8 @@ export function AiCliView() {
                                         {isOperating === `install-${tool.id}` ? (
                                             <span className="spinner" style={{ width: 12, height: 12 }} />
                                         ) : (
-                                                t('ai_cli.install')
-                                            )}
+                                            t('ai_cli.install')
+                                        )}
                                     </button>
                                 )}
                                 <a

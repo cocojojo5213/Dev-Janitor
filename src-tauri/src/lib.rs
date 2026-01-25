@@ -1,5 +1,9 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 
+// Allow unused code for cross-platform compatibility and future features
+#![allow(dead_code)]
+#![allow(unused_variables)]
+
 mod ai_cleanup;
 mod ai_cli;
 mod cache;

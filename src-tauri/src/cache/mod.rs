@@ -254,7 +254,7 @@ pub fn clean_cache(path: &str) -> Result<String, String> {
             #[cfg(target_os = "windows")]
             {
                 // Try to remove readonly attributes first
-                if let Err(_) = remove_readonly_and_delete(&cache_path) {
+                if remove_readonly_and_delete(&cache_path).is_err() {
                     return Err(format!("Failed to clean {}: {}", path, e));
                 }
                 Ok(format!(

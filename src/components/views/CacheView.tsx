@@ -1,18 +1,26 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { scanCaches, scanProjectCaches, cleanCache, cleanMultipleCaches, CacheInfo } from '../../ipc/commands';
+import { scanCaches, scanProjectCaches, cleanCache, cleanMultipleCaches } from '../../ipc/commands';
+import { useAppStore, CacheInfoStore } from '../../store';
 
 export function CacheView() {
     const { t } = useTranslation();
-    const [packageCaches, setPackageCaches] = useState<CacheInfo[]>([]);
-    const [projectCaches, setProjectCaches] = useState<CacheInfo[]>([]);
+
+    // Use global store for data that should persist
+    const packageCaches = useAppStore((state) => state.cachePackageData);
+    const setPackageCaches = useAppStore((state) => state.setCachePackageData);
+    const projectCaches = useAppStore((state) => state.cacheProjectData);
+    const setProjectCaches = useAppStore((state) => state.setCacheProjectData);
+    const projectPath = useAppStore((state) => state.cacheProjectPath);
+    const setProjectPath = useAppStore((state) => state.setCacheProjectPath);
+
+    // Local state for transient UI
     const [isScanning, setIsScanning] = useState(false);
     const [isCleaning, setIsCleaning] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [selectedPackageCaches, setSelectedPackageCaches] = useState<Set<string>>(new Set());
     const [selectedProjectCaches, setSelectedProjectCaches] = useState<Set<string>>(new Set());
-    const [projectPath, setProjectPath] = useState('');
     const [activeTab, setActiveTab] = useState<'package' | 'project'>('package');
 
     const handleScanPackageCaches = useCallback(async () => {
@@ -28,7 +36,7 @@ export function CacheView() {
         } finally {
             setIsScanning(false);
         }
-    }, []);
+    }, [setPackageCaches]);
 
     const handleScanProjectCaches = useCallback(async () => {
         if (!projectPath.trim()) {
@@ -48,7 +56,7 @@ export function CacheView() {
         } finally {
             setIsScanning(false);
         }
-    }, [projectPath]);
+    }, [projectPath, setProjectCaches, t]);
 
     const toggleCacheSelection = (path: string) => {
         const selectedCaches = activeTab === 'package' ? selectedPackageCaches : selectedProjectCaches;
@@ -63,7 +71,7 @@ export function CacheView() {
     };
 
     const selectAllCaches = (
-        caches: CacheInfo[],
+        caches: CacheInfoStore[],
         selected: Set<string>,
         setSelected: (next: Set<string>) => void
     ) => {
@@ -73,7 +81,7 @@ export function CacheView() {
     };
 
     const deselectAllCaches = (
-        caches: CacheInfo[],
+        caches: CacheInfoStore[],
         selected: Set<string>,
         setSelected: (next: Set<string>) => void
     ) => {
@@ -134,7 +142,7 @@ export function CacheView() {
         }
     };
 
-    const handleCleanSingle = async (cache: CacheInfo) => {
+    const handleCleanSingle = async (cache: CacheInfoStore) => {
         const displayName = getCacheDisplayName(cache);
         if (!confirm(t('cache.confirm_clean_single', { name: displayName, size: cache.size_display }))) {
             return;
@@ -204,7 +212,7 @@ export function CacheView() {
         'Vendor Directory': t('cache.names.vendor_directory'),
     };
 
-    const getCacheDisplayName = (cache: CacheInfo) => cacheNameMap[cache.name] || cache.name;
+    const getCacheDisplayName = (cache: CacheInfoStore) => cacheNameMap[cache.name] || cache.name;
 
     return (
         <div className="view-container">
@@ -375,12 +383,12 @@ export function CacheView() {
                     {projectCaches.length > 0 && (
                         <>
                             <div className="select-actions">
-                                    <button className="btn btn-secondary btn-small" onClick={() => selectAllCaches(projectCaches, selectedProjectCaches, setSelectedProjectCaches)}>
-                                        {t('common.select_all')}
-                                    </button>
-                                    <button className="btn btn-secondary btn-small" onClick={() => deselectAllCaches(projectCaches, selectedProjectCaches, setSelectedProjectCaches)}>
-                                        {t('common.deselect_all')}
-                                    </button>
+                                <button className="btn btn-secondary btn-small" onClick={() => selectAllCaches(projectCaches, selectedProjectCaches, setSelectedProjectCaches)}>
+                                    {t('common.select_all')}
+                                </button>
+                                <button className="btn btn-secondary btn-small" onClick={() => deselectAllCaches(projectCaches, selectedProjectCaches, setSelectedProjectCaches)}>
+                                    {t('common.deselect_all')}
+                                </button>
                             </div>
                             <div className="card">
                                 <div className="table-container">

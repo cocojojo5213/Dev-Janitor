@@ -43,15 +43,30 @@ Developers love creating, but we hate the mess left behind. `node_modules`, `tar
 ## 📸 Screenshots
 
 <div align="center">
-  <img src="assets/headers/screenshot_dashboard.png" alt="Dashboard View" width="800"/>
-  <p><em>Modern, intuitive dashboard giving you a complete system overview</em></p>
+  <img src="assets/screenshots/tools.png" alt="Tools View" width="800"/>
+  <p><em>Manage all your development tools in one place</em></p>
 </div>
 
 <br/>
 
 <div align="center">
-  <img src="assets/headers/screenshot_clean.png" alt="Cleanup View" width="800"/>
-  <p><em>Scan and clean gigabytes of junk with a single click</em></p>
+  <img src="assets/screenshots/ai_cleanup.png" alt="AI Cleanup View" width="800"/>
+  <p><em>Scan and clean AI tool leftovers with a single click</em></p>
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="assets/screenshots/cache.png" alt="Cache View" width="800"/>
+  <p><em>Reclaim gigabytes of space from package manager caches</em></p>
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="assets/screenshots/services.png" alt="Services View" width="800"/>
+  <p><em>Monitor and manage development processes and ports</em></p>
+</div>
 
 
 ## 📥 Installation

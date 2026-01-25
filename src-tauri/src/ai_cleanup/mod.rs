@@ -162,7 +162,7 @@ fn is_whitelisted(path: &Path) -> bool {
 }
 
 /// Check if a file matches AI tool patterns
-fn check_ai_tool_pattern(path: &PathBuf) -> Option<(&'static str, &'static str)> {
+fn check_ai_tool_pattern(path: &Path) -> Option<(&'static str, &'static str)> {
     let name = path
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
@@ -188,7 +188,7 @@ fn check_ai_tool_pattern(path: &PathBuf) -> Option<(&'static str, &'static str)>
 }
 
 /// Check if a file matches temp file patterns
-fn check_temp_pattern(path: &PathBuf) -> Option<(&'static str, &'static str)> {
+fn check_temp_pattern(path: &Path) -> Option<(&'static str, &'static str)> {
     let name = path
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
@@ -204,7 +204,7 @@ fn check_temp_pattern(path: &PathBuf) -> Option<(&'static str, &'static str)> {
 }
 
 /// Check for anomalous files (zero-byte, very short names, etc.)
-fn check_anomalous(path: &PathBuf) -> Option<String> {
+fn check_anomalous(path: &Path) -> Option<String> {
     let name = path
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
@@ -256,7 +256,6 @@ pub fn scan_ai_junk(root_path: &str, max_depth: usize) -> Vec<AiJunkFile> {
         .filter_map(|e| e.ok())
         .collect();
 
-    let mut id_counter = 0;
     let mut junk_files: Vec<AiJunkFile> = entries
         .par_iter()
         .filter_map(|entry| {
@@ -321,9 +320,8 @@ pub fn scan_ai_junk(root_path: &str, max_depth: usize) -> Vec<AiJunkFile> {
     junk_files.sort_by(|a, b| b.size.cmp(&a.size));
 
     // Assign sequential IDs
-    for file in &mut junk_files {
+    for (id_counter, file) in junk_files.iter_mut().enumerate() {
         file.id = format!("junk_{}", id_counter);
-        id_counter += 1;
     }
 
     junk_files
@@ -357,7 +355,7 @@ pub fn delete_ai_junk(path: &str) -> Result<String, String> {
             // Try with permission fix
             #[cfg(target_os = "windows")]
             {
-                if let Ok(_) = fix_permissions_and_delete(&file_path) {
+                if fix_permissions_and_delete(&file_path).is_ok() {
                     return Ok(format!(
                         "Successfully deleted {} (freed {})",
                         path,
@@ -368,7 +366,7 @@ pub fn delete_ai_junk(path: &str) -> Result<String, String> {
 
             #[cfg(unix)]
             {
-                if let Ok(_) = chmod_and_delete(&file_path) {
+                if chmod_and_delete(&file_path).is_ok() {
                     return Ok(format!(
                         "Successfully deleted {} (freed {})",
                         path,

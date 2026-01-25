@@ -227,6 +227,17 @@ fn check_tool(mut tool: AiCliTool) -> AiCliTool {
 
 /// Run a command and extract version
 fn run_command_get_version(cmd: &str, args: &[&str]) -> Option<String> {
+    // On Windows, .cmd files (npm scripts) need to be run through cmd /c
+    #[cfg(target_os = "windows")]
+    let output = {
+        let full_cmd = format!("{} {}", cmd, args.join(" "));
+        command_no_window("cmd")
+            .args(["/C", &full_cmd])
+            .output()
+            .ok()?
+    };
+
+    #[cfg(not(target_os = "windows"))]
     let output = command_no_window(cmd).args(args).output().ok()?;
 
     if output.status.success() {

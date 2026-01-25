@@ -43,16 +43,31 @@
 ## 📸 软件截图
 
 <div align="center">
-  <img src="assets/headers/screenshot_dashboard.png" alt="仪表盘预览" width="800"/>
-  <p><em>现代化的仪表盘设计，系统状态一目了然</em></p>
+  <img src="assets/screenshots/tools.png" alt="工具管理" width="800"/>
+  <p><em>一站式管理所有开发工具</em></p>
 </div>
 
 <br/>
 
 <div align="center">
-  <img src="assets/headers/screenshot_clean.png" alt="清理页面预览" width="800"/>
-  <p><em>一键扫描，秒级清理，瞬间释放 Gigabytes 空间</em></p>
+  <img src="assets/screenshots/ai_cleanup.png" alt="AI 清理" width="800"/>
+  <p><em>一键扫描并清理 AI 工具残留文件</em></p>
 </div>
+
+<br/>
+
+<div align="center">
+  <img src="assets/screenshots/cache.png" alt="缓存清理" width="800"/>
+  <p><em>释放包管理器缓存占用的数 GB 空间</em></p>
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="assets/screenshots/services.png" alt="服务管理" width="800"/>
+  <p><em>监控和管理开发进程与端口占用</em></p>
+</div>
+
 
 
 ## 📥 安装

@@ -118,6 +118,92 @@ interface AppState {
     setAiCleanupScanDepth: (depth: number) => void;
     aiCleanupFilterType: string;
     setAiCleanupFilterType: (type: string) => void;
+
+    // Packages View State (persisted across page switches)
+    packagesData: PackageInfoStore[];
+    setPackagesData: (packages: PackageInfoStore[]) => void;
+    packagesFilterManager: string;
+    setPackagesFilterManager: (manager: string) => void;
+    packagesFilterOutdated: boolean;
+    setPackagesFilterOutdated: (outdated: boolean) => void;
+
+    // Tools View State
+    toolsData: ToolInfoStore[];
+    setToolsData: (tools: ToolInfoStore[]) => void;
+
+    // Cache View State
+    cachePackageData: CacheInfoStore[];
+    setCachePackageData: (caches: CacheInfoStore[]) => void;
+    cacheProjectData: CacheInfoStore[];
+    setCacheProjectData: (caches: CacheInfoStore[]) => void;
+    cacheProjectPath: string;
+    setCacheProjectPath: (path: string) => void;
+
+    // Services View State
+    servicesProcesses: ProcessInfoStore[];
+    setServicesProcesses: (processes: ProcessInfoStore[]) => void;
+    servicesPorts: PortInfoStore[];
+    setServicesPorts: (ports: PortInfoStore[]) => void;
+
+    // AI CLI View State
+    aiCliToolsData: AiCliToolStore[];
+    setAiCliToolsData: (tools: AiCliToolStore[]) => void;
+}
+
+export interface PackageInfoStore {
+    name: string;
+    version: string;
+    latest: string | null;
+    manager: string;
+    is_outdated: boolean;
+    description: string | null;
+}
+
+export interface ToolInfoStore {
+    id: string;
+    name: string;
+    category: string;
+    status: string;
+    versions: Array<{ version: string; path: string; is_active: boolean }>;
+}
+
+export interface CacheInfoStore {
+    id: string;
+    name: string;
+    path: string;
+    size: number;
+    size_display: string;
+    cache_type: string;
+}
+
+export interface ProcessInfoStore {
+    pid: number;
+    name: string;
+    category: string;
+    status: string;
+    memory: number;
+    memory_display: string;
+    cpu: number;
+    exe_path: string;
+}
+
+export interface PortInfoStore {
+    port: number;
+    protocol: string;
+    pid: number;
+    process_name: string;
+    state: string;
+}
+
+export interface AiCliToolStore {
+    id: string;
+    name: string;
+    description: string;
+    installed: boolean;
+    version: string | null;
+    install_command: string;
+    docs_url: string;
+    config_paths: Array<{ name: string; path: string; exists: boolean }> | null;
 }
 
 export const useAppStore = create<AppState>()(
@@ -167,6 +253,36 @@ export const useAppStore = create<AppState>()(
             setAiCleanupScanDepth: (depth) => set({ aiCleanupScanDepth: depth }),
             aiCleanupFilterType: 'all',
             setAiCleanupFilterType: (type) => set({ aiCleanupFilterType: type }),
+
+            // Packages View State
+            packagesData: [],
+            setPackagesData: (packages) => set({ packagesData: packages }),
+            packagesFilterManager: 'all',
+            setPackagesFilterManager: (manager) => set({ packagesFilterManager: manager }),
+            packagesFilterOutdated: false,
+            setPackagesFilterOutdated: (outdated) => set({ packagesFilterOutdated: outdated }),
+
+            // Tools View State
+            toolsData: [],
+            setToolsData: (tools) => set({ toolsData: tools }),
+
+            // Cache View State
+            cachePackageData: [],
+            setCachePackageData: (caches) => set({ cachePackageData: caches }),
+            cacheProjectData: [],
+            setCacheProjectData: (caches) => set({ cacheProjectData: caches }),
+            cacheProjectPath: '',
+            setCacheProjectPath: (path) => set({ cacheProjectPath: path }),
+
+            // Services View State
+            servicesProcesses: [],
+            setServicesProcesses: (processes) => set({ servicesProcesses: processes }),
+            servicesPorts: [],
+            setServicesPorts: (ports) => set({ servicesPorts: ports }),
+
+            // AI CLI View State
+            aiCliToolsData: [],
+            setAiCliToolsData: (tools) => set({ aiCliToolsData: tools }),
         }),
         {
             name: 'dev-janitor-storage',
