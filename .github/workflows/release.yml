@@ -99,20 +99,39 @@ jobs:
         shell: pwsh
         run: |
           $version = (Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json).version
-          $exePath = "src-tauri/target/x86_64-pc-windows-msvc/release/Dev Janitor.exe"
+          $releaseDir = "src-tauri/target/x86_64-pc-windows-msvc/release"
           $portableDir = "portable"
           $zipName = "Dev-Janitor_${version}_x64_portable.zip"
+          
+          # List release directory to debug
+          Write-Host "=== Release directory contents ==="
+          Get-ChildItem $releaseDir -Filter "*.exe" | ForEach-Object { Write-Host $_.FullName }
+          
+          # Find the main executable (excluding uninstall, etc.)
+          $exeFile = Get-ChildItem $releaseDir -Filter "*.exe" | Where-Object { 
+            $_.Name -notmatch "uninstall" -and 
+            $_.Name -notmatch "WebView2" -and
+            $_.Length -gt 1MB
+          } | Select-Object -First 1
+          
+          if (-not $exeFile) {
+            Write-Error "Could not find main executable in $releaseDir"
+            exit 1
+          }
+          
+          Write-Host "Found executable: $($exeFile.FullName)"
           
           # Create portable directory
           New-Item -ItemType Directory -Force -Path $portableDir
           
           # Copy executable
-          Copy-Item $exePath -Destination $portableDir/
+          Copy-Item $exeFile.FullName -Destination $portableDir/
           
           # Create a portable marker file (prevents storing config in AppData)
           New-Item -ItemType File -Path "$portableDir/.portable" -Force
           
           # Create README for portable version
+          $exeName = $exeFile.Name
           @"
           Dev Janitor v$version - Portable Edition
           ==========================================
@@ -122,7 +141,7 @@ jobs:
           - Microsoft Edge WebView2 Runtime (usually pre-installed on Windows 10/11)
           
           Usage:
-          Simply run "Dev Janitor.exe" from this folder.
+          Simply run "$exeName" from this folder.
           
           Note: This portable version stores settings in the same directory.
           "@ | Out-File -FilePath "$portableDir/README.txt" -Encoding UTF8
