@@ -5,6 +5,39 @@ All notable changes to Dev Janitor will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-01-27
+
+### 新增
+- **AI 安全扫描** ([Issue #37](https://github.com/cocojojo5213/Dev-Janitor/issues/37))
+  - 新增 "安全扫描" 功能模块，检测 AI 开发工具的安全漏洞和配置问题
+  - 支持 10 种 AI 工具的安全规则：
+    - **Clawdbot**: 检测暴露的 Gateway 端口 (18789)、Control UI 端口 (18790)、不安全的 trustedProxies 配置、暴露的 API 密钥
+    - **OpenCode**: ⚠️ **CVE-2026-22812** - 检测未认证 HTTP 服务器 (端口 4096-4097)、CORS 通配符漏洞允许任意网站 RCE
+    - **Aider**: 检测 WebUI 端口、.aider.conf 中的 API 密钥
+    - **Claude Code**: 检测 Chrome DevTools 调试端口 (9222)
+    - **Codex CLI**: 检测配置文件中的 API 密钥
+    - **Continue**: 检测本地服务器端口
+    - **Cursor**: 检测调试端口 (9229)、⚠️ 供应链攻击检测 (.vscode/tasks.json 恶意代码执行)
+    - **Windsurf**: 检测语言服务器端口
+    - **MCP Servers**: ⚠️ 新增 Model Context Protocol 服务器检测 - 36.7% SSRF 漏洞、66% 凭证泄露
+    - **Gemini CLI**: 检测 Google API 密钥泄露
+  - 风险等级分类：Critical（严重）、High（高危）、Medium（中危）、Low（低危）
+  - 提供详细的修复建议和文档链接
+  - 支持全面扫描或单个工具扫描
+  - 模块化设计，易于扩展新的 AI 工具安全规则
+
+### 安全
+- 基于 2026 年 1 月最新安全研究更新检测规则
+- CVE-2026-22812: OpenCode 远程代码执行漏洞（建议升级到 >= 1.0.216）
+- MCP 协议安全：覆盖 Anthropic、Microsoft 等 MCP 服务器的 RCE/SSRF 漏洞
+- Cursor 供应链攻击：检测恶意 .vscode/tasks.json 配置
+
+### 技术改进
+- 新增 `security_scan` Rust 模块，包含 `definitions.rs` 和 `scanner.rs`
+- 使用 `OnceLock` 实现安全规则的懒加载
+- 集成系统端口检测功能，识别非本地绑定的危险端口
+
+
 ## [2.1.1] - 2026-01-26
 
 ### 新增

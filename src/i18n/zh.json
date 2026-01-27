@@ -1,7 +1,7 @@
 {
     "app": {
         "name": "开发清道夫",
-        "version": "v2.0.0"
+        "version": "v2.2.0"
     },
     "nav": {
         "tools": "工具",
@@ -10,6 +10,7 @@
         "ai_cleanup": "AI 清理",
         "chat_history": "聊天记录",
         "services": "服务",
+        "security_scan": "安全扫描",
         "config": "诊断",
         "ai_cli": "AI CLI",
         "settings": "设置"
@@ -370,6 +371,29 @@
                 "name": "Cursor CLI",
                 "description": "Cursor 编辑器命令行工具"
             }
+        }
+    },
+    "security": {
+        "title": "AI 安全扫描",
+        "description": "扫描 AI 开发工具中的安全漏洞和配置问题",
+        "tab_scan": "安全扫描",
+        "tab_tools": "支持的工具",
+        "scan_all": "扫描全部",
+        "scan_tool": "扫描",
+        "last_scan": "上次扫描",
+        "filter_all": "全部问题",
+        "no_issues": "一切正常！",
+        "no_issues_desc": "未检测到 AI 工具的安全问题。",
+        "remediation": "修复建议",
+        "ports": "个端口",
+        "checks": "项检查",
+        "docs": "文档",
+        "tools_description": "以下是支持安全扫描的 AI 开发工具。点击'扫描'可检查特定工具。",
+        "risk_levels": {
+            "critical": "严重",
+            "high": "高危",
+            "medium": "中危",
+            "low": "低危"
         }
     },
     "settings": {

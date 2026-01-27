@@ -35,6 +35,13 @@ Developers love creating, but we hate the mess left behind. `node_modules`, `tar
 - **Version Control**: Check versions and update global packages easily.
 - **AI CLI Hub**: Install and manage AI tools like Claude Code, Codex, OpenCode, and Aider.
 
+### 🔐 Security Scan (NEW in v2.2)
+- **CVE Detection**: Scan for known vulnerabilities like CVE-2026-22812 (OpenCode RCE).
+- **Port Exposure**: Detect AI tools with exposed ports that should be localhost-only.
+- **API Key Leaks**: Find API keys stored insecurely in config files.
+- **MCP Security**: Check Model Context Protocol servers for SSRF and credential leaks.
+- **Supply Chain**: Detect malicious `.vscode/tasks.json` in Cursor projects.
+
 ### 📊 System Health
 - **Process Killer**: Identify and stop resource-heavy development processes.
 - **Port Scanner**: Find which service is hogging port 3000 or 8080.

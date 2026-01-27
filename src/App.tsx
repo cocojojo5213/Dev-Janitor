@@ -14,6 +14,7 @@ const ChatHistoryView = lazy(() => import('./components/views/ChatHistoryView').
 const ServicesView = lazy(() => import('./components/views/ServicesView').then(m => ({ default: m.ServicesView })));
 const ConfigView = lazy(() => import('./components/views/ConfigView').then(m => ({ default: m.ConfigView })));
 const AiCliView = lazy(() => import('./components/views/AiCliView').then(m => ({ default: m.AiCliView })));
+const SecurityScanView = lazy(() => import('./components/views/SecurityScanView').then(m => ({ default: m.SecurityScanView })));
 
 function LoadingFallback() {
   return (
@@ -26,7 +27,7 @@ function LoadingFallback() {
 function CurrentView() {
   const currentView = useAppStore((state) => state.currentView);
 
-  const viewComponents = {
+  const viewComponents: Record<string, React.LazyExoticComponent<() => JSX.Element>> = {
     tools: ToolsView,
     packages: PackagesView,
     cache: CacheView,
@@ -35,6 +36,7 @@ function CurrentView() {
     services: ServicesView,
     config: ConfigView,
     ai_cli: AiCliView,
+    security_scan: SecurityScanView,
     settings: SettingsView,
   };
 

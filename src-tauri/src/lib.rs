@@ -13,6 +13,7 @@ mod config;
 mod detection;
 mod error;
 mod package_manager;
+mod security_scan;
 mod services;
 mod utils;
 
@@ -21,10 +22,11 @@ use commands::{
     delete_chat_file_cmd, delete_multiple_ai_junk, delete_multiple_chat_files,
     delete_project_chat_history_cmd, diagnose_env_cmd, get_ai_cli_tools_cmd, get_all_processes_cmd,
     get_common_dev_ports_cmd, get_dev_processes_cmd, get_path_suggestions_cmd, get_ports_cmd,
-    get_shell_configs_cmd, get_tool_info, get_total_cache_size, install_ai_tool_cmd,
-    kill_process_cmd, scan_ai_junk_cmd, scan_caches, scan_chat_history_cmd,
-    scan_global_chat_history_cmd, scan_packages, scan_project_caches_cmd, scan_tools,
-    uninstall_ai_tool_cmd, uninstall_package, uninstall_tool, update_ai_tool_cmd, update_package,
+    get_security_tools_cmd, get_shell_configs_cmd, get_tool_info, get_total_cache_size,
+    install_ai_tool_cmd, kill_process_cmd, scan_ai_junk_cmd, scan_caches, scan_chat_history_cmd,
+    scan_global_chat_history_cmd, scan_packages, scan_project_caches_cmd, scan_security_cmd,
+    scan_tool_security_cmd, scan_tools, uninstall_ai_tool_cmd, uninstall_package, uninstall_tool,
+    update_ai_tool_cmd, update_package,
 };
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -75,6 +77,10 @@ pub fn run() {
             install_ai_tool_cmd,
             update_ai_tool_cmd,
             uninstall_ai_tool_cmd,
+            // Security scan commands
+            scan_security_cmd,
+            scan_tool_security_cmd,
+            get_security_tools_cmd,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

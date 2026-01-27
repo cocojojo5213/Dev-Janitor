@@ -1,7 +1,7 @@
 {
     "app": {
         "name": "Dev Janitor",
-        "version": "v2.0.0"
+        "version": "v2.2.0"
     },
     "nav": {
         "tools": "Tools",
@@ -10,6 +10,7 @@
         "ai_cleanup": "AI Cleanup",
         "chat_history": "Chat History",
         "services": "Services",
+        "security_scan": "Security Scan",
         "config": "Config",
         "ai_cli": "AI CLI",
         "settings": "Settings"
@@ -370,6 +371,29 @@
                 "name": "Cursor CLI",
                 "description": "Cursor AI editor command line interface"
             }
+        }
+    },
+    "security": {
+        "title": "AI Security Scanner",
+        "description": "Scan AI development tools for security vulnerabilities and misconfigurations",
+        "tab_scan": "Security Scan",
+        "tab_tools": "Supported Tools",
+        "scan_all": "Scan All Tools",
+        "scan_tool": "Scan",
+        "last_scan": "Last scan",
+        "filter_all": "All Issues",
+        "no_issues": "All Clear!",
+        "no_issues_desc": "No security issues were detected in your AI tools.",
+        "remediation": "Fix",
+        "ports": "ports",
+        "checks": "checks",
+        "docs": "Docs",
+        "tools_description": "These AI development tools are supported for security scanning. Click 'Scan' to check a specific tool.",
+        "risk_levels": {
+            "critical": "Critical",
+            "high": "High",
+            "medium": "Medium",
+            "low": "Low"
         }
     },
     "settings": {

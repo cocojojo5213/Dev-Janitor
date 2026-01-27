@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 // ============ Types ============
 
 export type Theme = 'light' | 'dark' | 'system';
-export type NavView = 'tools' | 'packages' | 'cache' | 'ai_cleanup' | 'chat_history' | 'services' | 'config' | 'ai_cli' | 'settings';
+export type NavView = 'tools' | 'packages' | 'cache' | 'ai_cleanup' | 'chat_history' | 'services' | 'security_scan' | 'config' | 'ai_cli' | 'settings';
 
 export interface ToolInfo {
     id: string;

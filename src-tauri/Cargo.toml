@@ -1,6 +1,6 @@
 [package]
 name = "dev-janitor-v2"
-version = "2.1.0"
+version = "2.2.0"
 description = "Developer environment cleanup and management tool"
 authors = ["Dev Janitor Team"]
 edition = "2021"
@@ -62,6 +62,9 @@ tracing-subscriber = "0.3"
 
 # Hash generation
 md5 = "0.7"
+
+# Date/time formatting
+chrono = "0.4"
 
 # ============ Release Profile Optimization ============
 # These settings significantly reduce binary size
