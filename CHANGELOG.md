@@ -5,6 +5,14 @@ All notable changes to Dev Janitor will be documented in this file.
 
 ---
 
+## [1.7.6] - 2026-01-27
+
+### Changed / 变更
+- **Legacy v1 upgrade notice**: Show a startup dialog pointing to the v2 releases page; it appears on every launch until the user chooses to stop reminders.
+- **旧版 v1 升级提醒**: 启动时弹窗引导到 v2 发布页；每次启动都会提示，直到用户选择停止提醒。
+
+---
+
 ## [1.7.5] - 2026-01-23
 
 ### Added / 新增
@@ -185,6 +193,7 @@ All notable changes to Dev Janitor will be documented in this file.
 
 ---
 
+[1.7.6]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.6
 [1.7.5]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.5
 [1.7.4]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.4
 [1.7.3]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.3

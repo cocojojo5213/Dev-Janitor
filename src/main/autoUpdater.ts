@@ -7,8 +7,10 @@
  * Requirements: 12.1-12.3 (Cross-platform support and distribution)
  */
 
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { autoUpdater, UpdateInfo, ProgressInfo } from 'electron-updater';
+import fs from 'node:fs';
+import path from 'node:path';
 
 // Configure logging
 autoUpdater.logger = console;
@@ -22,11 +24,88 @@ if (process.env.NODE_ENV === 'development') {
   autoUpdater.forceDevUpdateConfig = true;
 }
 
+const LEGACY_V2_RELEASES_URL = 'https://github.com/cocojojo5213/Dev-Janitor/releases';
+const LEGACY_NOTICE_FILE = 'legacy-upgrade-notice.json';
+
+type LegacyNoticeState = {
+  dismissed: boolean;
+};
+
+function getLegacyNoticeStatePath(): string {
+  return path.join(app.getPath('userData'), LEGACY_NOTICE_FILE);
+}
+
+function readLegacyNoticeState(): LegacyNoticeState {
+  try {
+    const statePath = getLegacyNoticeStatePath();
+    if (!fs.existsSync(statePath)) {
+      return { dismissed: false };
+    }
+
+    const raw = fs.readFileSync(statePath, 'utf-8');
+    const parsed = JSON.parse(raw) as Partial<LegacyNoticeState>;
+    return { dismissed: parsed.dismissed === true };
+  } catch (error) {
+    console.warn('Failed to read legacy notice state:', error);
+    return { dismissed: false };
+  }
+}
+
+function writeLegacyNoticeState(state: LegacyNoticeState): void {
+  try {
+    const statePath = getLegacyNoticeStatePath();
+    fs.writeFileSync(statePath, JSON.stringify(state, null, 2), 'utf-8');
+  } catch (error) {
+    console.warn('Failed to write legacy notice state:', error);
+  }
+}
+
+function shouldShowLegacyUpgradeNotice(): boolean {
+  return !readLegacyNoticeState().dismissed;
+}
+
+async function showLegacyUpgradeNotice(mainWindow: BrowserWindow): Promise<void> {
+  // Only show this notice in packaged builds for real end users.
+  if (!app.isPackaged) {
+    return;
+  }
+
+  if (!shouldShowLegacyUpgradeNotice()) {
+    return;
+  }
+
+  const result = await dialog.showMessageBox(mainWindow, {
+    type: 'warning',
+    title: 'Dev Janitor v2 Available',
+    message: 'You are using the legacy v1 (Electron) version.',
+    detail:
+      'Dev Janitor v2 is now available and actively maintained.\n\n' +
+      'We strongly recommend upgrading to v2 for better performance and smaller downloads.',
+    buttons: ['Open v2 Releases', 'Remind Me Next Time', 'Stop Reminding'],
+    defaultId: 0,
+    cancelId: 1,
+    noLink: true,
+  });
+
+  if (result.response === 0) {
+    void shell.openExternal(LEGACY_V2_RELEASES_URL);
+  }
+
+  if (result.response === 2) {
+    writeLegacyNoticeState({ dismissed: true });
+  }
+}
+
 /**
  * Initialize the auto-updater
  * @param mainWindow - The main browser window for sending update events
  */
 export function initAutoUpdater(mainWindow: BrowserWindow): void {
+  // Show legacy upgrade notice on every startup until the user opts out.
+  setTimeout(() => {
+    void showLegacyUpgradeNotice(mainWindow);
+  }, 1500);
+
   // Check for updates on startup (with delay to not block app launch)
   setTimeout(() => {
     checkForUpdates(mainWindow);
