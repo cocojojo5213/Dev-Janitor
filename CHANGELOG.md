@@ -5,6 +5,14 @@ All notable changes to Dev Janitor will be documented in this file.
 
 ---
 
+## [1.7.8] - 2026-01-27
+
+### Fixed / 修复
+- **Windows portable release asset**: Add a Windows CI step that always produces a portable ZIP (uses the portable target when available, otherwise packages `win-unpacked`).
+- **Windows 10 full-disk scan hang**: Only enumerate fixed local drives (DriveType=3) instead of probing every drive letter A-Z.
+
+---
+
 ## [1.7.7] - 2026-01-27
 
 ### Fixed / 修复
@@ -201,6 +209,7 @@ All notable changes to Dev Janitor will be documented in this file.
 
 ---
 
+[1.7.8]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.8
 [1.7.7]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.7
 [1.7.6]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.6
 [1.7.5]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.5

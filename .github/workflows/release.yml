@@ -36,6 +36,50 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Ensure portable asset (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          $releaseDir = Join-Path "release" $version
+
+          if (-not (Test-Path $releaseDir)) {
+            Write-Error "Release directory not found: $releaseDir"
+            exit 1
+          }
+
+          $portableDir = Join-Path $releaseDir "portable"
+          New-Item -ItemType Directory -Force -Path $portableDir | Out-Null
+
+          $portableExe = Get-ChildItem $releaseDir -Filter "*Portable*.exe" -File -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+
+          if ($portableExe) {
+            Write-Host "Found portable executable: $($portableExe.FullName)"
+            Copy-Item $portableExe.FullName -Destination $portableDir -Force
+          } else {
+            Write-Warning "Portable executable not found; falling back to win-unpacked."
+            $mainExe = Get-ChildItem $releaseDir -Recurse -Filter "*.exe" -File -ErrorAction SilentlyContinue |
+              Where-Object { $_.FullName -match "win-unpacked" -and $_.Name -notmatch "uninstall|setup" } |
+              Sort-Object Length -Descending |
+              Select-Object -First 1
+
+            if (-not $mainExe) {
+              Write-Error "Could not find a Windows executable to package."
+              exit 1
+            }
+
+            Write-Host "Using win-unpacked executable: $($mainExe.FullName)"
+            Copy-Item $mainExe.FullName -Destination $portableDir -Force
+          }
+
+          New-Item -ItemType File -Path (Join-Path $portableDir ".portable") -Force | Out-Null
+
+          $zipName = "Dev-Janitor_${version}_x64_portable.zip"
+          $zipPath = Join-Path $releaseDir $zipName
+          Compress-Archive -Path (Join-Path $portableDir "*") -DestinationPath $zipPath -Force
+          Write-Host "Portable ZIP ready: $zipPath"
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:

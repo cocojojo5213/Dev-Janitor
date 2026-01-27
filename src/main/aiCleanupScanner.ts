@@ -14,6 +14,10 @@
 import { promises as fs } from 'fs'
 import * as path from 'path'
 import * as os from 'os'
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
+
+const execFileAsync = promisify(execFile)
 
 export interface AIJunkFile {
   id: string                    // Unique identifier
@@ -687,13 +691,61 @@ function getScanTargets(): ScanTarget[] {
   return mergeScanTargets(targets)
 }
 
-function getFullDiskTargets(): ScanTarget[] {
+function extractWindowsDeviceIdFromPath(targetPath: string): string | null {
+  const root = path.parse(targetPath).root
+  const match = root.match(/^([a-zA-Z]:)/)
+  return match ? match[1].toUpperCase() : null
+}
+
+function toWindowsDriveRoot(deviceId: string | null | undefined): string | null {
+  if (!deviceId) return null
+  const trimmed = deviceId.trim()
+  if (!/^[a-zA-Z]:$/.test(trimmed)) return null
+  return `${trimmed.toUpperCase()}\\`
+}
+
+async function getWindowsFixedDriveRoots(): Promise<string[]> {
+  const drives = new Set<string>()
+  const addDrive = (deviceId: string | null | undefined): void => {
+    const root = toWindowsDriveRoot(deviceId)
+    if (root) drives.add(root)
+  }
+
+  addDrive(process.env.SystemDrive)
+  addDrive(extractWindowsDeviceIdFromPath(os.homedir()))
+
+  try {
+    const psCommand =
+      'Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | Select-Object -ExpandProperty DeviceID'
+    const { stdout } = await execFileAsync(
+      'powershell.exe',
+      ['-NoProfile', '-Command', psCommand],
+      { timeout: 8000 }
+    )
+
+    stdout
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(Boolean)
+      .forEach(line => addDrive(line))
+  } catch (error) {
+    console.warn('Failed to enumerate fixed drives, falling back to home drive:', error)
+  }
+
+  if (drives.size === 0) {
+    addDrive(extractWindowsDeviceIdFromPath(os.homedir()))
+  }
+
+  return Array.from(drives)
+}
+
+async function getFullDiskTargets(): Promise<ScanTarget[]> {
   if (process.platform === 'win32') {
-    const driveTargets: ScanTarget[] = []
-    for (let code = 65; code <= 90; code += 1) {
-      const drive = `${String.fromCharCode(code)}:\\`
-      driveTargets.push({ path: drive, maxDepth: FULL_DISK_SCAN_DEPTH })
-    }
+    const driveRoots = await getWindowsFixedDriveRoots()
+    const driveTargets = driveRoots.map(driveRoot => ({
+      path: driveRoot,
+      maxDepth: FULL_DISK_SCAN_DEPTH,
+    }))
     return mergeScanTargets(driveTargets)
   }
 
@@ -914,7 +966,7 @@ class AICleanupScanner {
    */
   async scanFullDisk(): Promise<AICleanupScanResult> {
     const startTime = Date.now()
-    const scanTargets = getFullDiskTargets()
+    const scanTargets = await getFullDiskTargets()
     const allFiles: AIJunkFile[] = []
     const scannedPaths: string[] = []
 
