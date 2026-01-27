@@ -211,82 +211,82 @@ export const useAppStore = create<AppState>()(
         (set) => ({
             // Navigation
             currentView: 'tools',
-            setCurrentView: (view) => set({ currentView: view }),
+            setCurrentView: (view: NavView) => set({ currentView: view }),
 
             // Theme
             theme: 'system',
-            setTheme: (theme) => {
+            setTheme: (theme: Theme) => {
                 set({ theme });
                 applyTheme(theme);
             },
 
             // Settings
             aiEndpoint: '',
-            setAiEndpoint: (endpoint) => set({ aiEndpoint: endpoint }),
+            setAiEndpoint: (endpoint: string) => set({ aiEndpoint: endpoint }),
 
             // Loading
             isScanning: false,
-            setIsScanning: (scanning) => set({ isScanning: scanning }),
+            setIsScanning: (scanning: boolean) => set({ isScanning: scanning }),
 
             // Data
             tools: [],
-            setTools: (tools) => set({ tools }),
+            setTools: (tools: ToolInfo[]) => set({ tools }),
             packages: [],
-            setPackages: (packages) => set({ packages }),
+            setPackages: (packages: PackageInfo[]) => set({ packages }),
             caches: [],
-            setCaches: (caches) => set({ caches }),
+            setCaches: (caches: CacheInfo[]) => set({ caches }),
             junkFiles: [],
-            setJunkFiles: (files) => set({ junkFiles: files }),
+            setJunkFiles: (files: JunkFile[]) => set({ junkFiles: files }),
             ports: [],
-            setPorts: (ports) => set({ ports }),
+            setPorts: (ports: PortInfo[]) => set({ ports }),
             aiCliTools: [],
-            setAiCliTools: (tools) => set({ aiCliTools: tools }),
+            setAiCliTools: (tools: AiCliTool[]) => set({ aiCliTools: tools }),
 
             // AI Cleanup View State
             aiCleanupJunkFiles: [],
-            setAiCleanupJunkFiles: (files) => set({ aiCleanupJunkFiles: files }),
+            setAiCleanupJunkFiles: (files: AiJunkFileStore[]) => set({ aiCleanupJunkFiles: files }),
             aiCleanupSelectedFiles: [],
-            setAiCleanupSelectedFiles: (files) => set({ aiCleanupSelectedFiles: files }),
+            setAiCleanupSelectedFiles: (files: string[]) => set({ aiCleanupSelectedFiles: files }),
             aiCleanupScanPath: '',
-            setAiCleanupScanPath: (path) => set({ aiCleanupScanPath: path }),
+            setAiCleanupScanPath: (path: string) => set({ aiCleanupScanPath: path }),
             aiCleanupScanDepth: 5,
-            setAiCleanupScanDepth: (depth) => set({ aiCleanupScanDepth: depth }),
+            setAiCleanupScanDepth: (depth: number) => set({ aiCleanupScanDepth: depth }),
             aiCleanupFilterType: 'all',
-            setAiCleanupFilterType: (type) => set({ aiCleanupFilterType: type }),
+            setAiCleanupFilterType: (type: string) => set({ aiCleanupFilterType: type }),
 
             // Packages View State
             packagesData: [],
-            setPackagesData: (packages) => set({ packagesData: packages }),
+            setPackagesData: (packages: PackageInfoStore[]) => set({ packagesData: packages }),
             packagesFilterManager: 'all',
-            setPackagesFilterManager: (manager) => set({ packagesFilterManager: manager }),
+            setPackagesFilterManager: (manager: string) => set({ packagesFilterManager: manager }),
             packagesFilterOutdated: false,
-            setPackagesFilterOutdated: (outdated) => set({ packagesFilterOutdated: outdated }),
+            setPackagesFilterOutdated: (outdated: boolean) => set({ packagesFilterOutdated: outdated }),
 
             // Tools View State
             toolsData: [],
-            setToolsData: (tools) => set({ toolsData: tools }),
+            setToolsData: (tools: ToolInfoStore[]) => set({ toolsData: tools }),
 
             // Cache View State
             cachePackageData: [],
-            setCachePackageData: (caches) => set({ cachePackageData: caches }),
+            setCachePackageData: (caches: CacheInfoStore[]) => set({ cachePackageData: caches }),
             cacheProjectData: [],
-            setCacheProjectData: (caches) => set({ cacheProjectData: caches }),
+            setCacheProjectData: (caches: CacheInfoStore[]) => set({ cacheProjectData: caches }),
             cacheProjectPath: '',
-            setCacheProjectPath: (path) => set({ cacheProjectPath: path }),
+            setCacheProjectPath: (path: string) => set({ cacheProjectPath: path }),
 
             // Services View State
             servicesProcesses: [],
-            setServicesProcesses: (processes) => set({ servicesProcesses: processes }),
+            setServicesProcesses: (processes: ProcessInfoStore[]) => set({ servicesProcesses: processes }),
             servicesPorts: [],
-            setServicesPorts: (ports) => set({ servicesPorts: ports }),
+            setServicesPorts: (ports: PortInfoStore[]) => set({ servicesPorts: ports }),
 
             // AI CLI View State
             aiCliToolsData: [],
-            setAiCliToolsData: (tools) => set({ aiCliToolsData: tools }),
+            setAiCliToolsData: (tools: AiCliToolStore[]) => set({ aiCliToolsData: tools }),
         }),
         {
             name: 'dev-janitor-storage',
-            partialize: (state) => ({
+            partialize: (state: AppState) => ({
                 theme: state.theme,
                 aiEndpoint: state.aiEndpoint,
             }),
