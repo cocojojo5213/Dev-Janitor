@@ -249,7 +249,7 @@ fn is_tool_running(tool: &AiToolSecurityRule) -> bool {
     let mut sys = System::new_all();
     sys.refresh_all();
 
-    for (_, process) in sys.processes() {
+    for process in sys.processes().values() {
         let name = process.name().to_string_lossy().to_lowercase();
         for pattern in &tool.process_names {
             if name.contains(pattern) {

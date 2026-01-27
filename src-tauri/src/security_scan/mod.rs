@@ -6,11 +6,5 @@
 mod definitions;
 pub mod scanner;
 
-pub use definitions::{
-    AiToolSecurityRule, ConfigCheckType, ConfigRule, PortRule, RiskLevel, SecurityFinding,
-    SecurityScanResult, SecuritySummary, get_rules, get_ai_tool_rules,
-};
-pub use scanner::{
-    check_config_files, check_exposed_ports, get_security_findings, scan_ai_tool_security,
-    scan_specific_tool,
-};
+pub use definitions::{SecurityScanResult, get_rules};
+pub use scanner::{scan_ai_tool_security, scan_specific_tool};

@@ -125,7 +125,6 @@ pub struct SecuritySummary {
 ///
 /// To add a new AI tool, add a new `AiToolSecurityRule` to this function.
 /// The scanner will automatically include it in scans.
-
 pub fn get_ai_tool_rules() -> Vec<AiToolSecurityRule> {
     vec![
         // =====================================
