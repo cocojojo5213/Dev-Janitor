@@ -5,6 +5,14 @@ All notable changes to Dev Janitor will be documented in this file.
 
 ---
 
+## [1.7.7] - 2026-01-27
+
+### Fixed / 修复
+- **Release CI on legacy branch**: Remove npm cache (lockfile required) and use `npm install` instead of `npm ci` so tagged builds can run without a lockfile.
+- **旧版分支发布 CI**: 移除 npm 缓存（需要 lockfile）并将 `npm ci` 改为 `npm install`，避免无 lockfile 时发布失败。
+
+---
+
 ## [1.7.6] - 2026-01-27
 
 ### Changed / 变更
@@ -193,6 +201,7 @@ All notable changes to Dev Janitor will be documented in this file.
 
 ---
 
+[1.7.7]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.7
 [1.7.6]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.6
 [1.7.5]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.5
 [1.7.4]: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v1.7.4
