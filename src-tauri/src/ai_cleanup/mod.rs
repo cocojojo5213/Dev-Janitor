@@ -58,7 +58,6 @@ const AI_TOOL_PATTERNS: &[(&str, &str)] = &[
     (".aws/amazonq", "Amazon Q cache"),
     (".aws/codewhisperer", "CodeWhisperer cache"),
     // Generic AI patterns
-    ("nul", "Windows NUL file (often created by AI tools)"),
     (".ai_cache", "Generic AI cache"),
     (".llm_cache", "LLM cache directory"),
 ];
@@ -386,6 +385,22 @@ pub fn delete_ai_junk(path: &str) -> Result<String, String> {
 
     if !file_path.exists() {
         return Err(format!("File does not exist: {}", path));
+    }
+
+    // Check for Windows reserved names
+    #[cfg(target_os = "windows")]
+    {
+        let name = file_path
+            .file_name()
+            .map(|n| n.to_string_lossy().to_lowercase())
+            .unwrap_or_default();
+        let reserved = ["con", "prn", "aux", "nul", "com1", "com2", "com3", "com4", 
+                        "com5", "com6", "com7", "com8", "com9", "lpt1", "lpt2", "lpt3", 
+                        "lpt4", "lpt5", "lpt6", "lpt7", "lpt8", "lpt9"];
+        let name_without_ext = name.split('.').next().unwrap_or(&name);
+        if reserved.contains(&name_without_ext) {
+            return Err(format!("Cannot delete Windows reserved name: {}", path));
+        }
     }
 
     // Get size before deletion
