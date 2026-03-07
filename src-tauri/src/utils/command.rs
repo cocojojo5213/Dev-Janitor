@@ -232,7 +232,7 @@ mod tests {
     fn wraps_batch_scripts_and_preserves_special_characters() {
         let script_path = create_temp_batch_script(
             "echo-args.cmd",
-            "@echo off\r\necho ARG1=%~1\r\necho ARG2=%~2\r\n",
+            "@echo off\r\nsetlocal\r\nset \"arg1=%~1\"\r\nset \"arg2=%~2\"\r\nif not \"%arg1%\"==\"hello world\" exit /b 1\r\nif not \"%arg2%\"==\"name&value\" exit /b 1\r\necho OK\r\n",
         );
 
         let args = vec!["hello world".to_string(), "name&value".to_string()];
@@ -244,9 +244,9 @@ mod tests {
         .expect("batch script should execute");
 
         let stdout = String::from_utf8_lossy(&output.stdout);
-        assert!(output.status.success());
-        assert!(stdout.contains("ARG1=hello world"));
-        assert!(stdout.contains("ARG2=name&value"));
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(output.status.success(), "stdout: {stdout}\nstderr: {stderr}");
+        assert!(stdout.contains("OK"));
 
         let _ = fs::remove_file(&script_path);
         let _ = script_path.parent().map(fs::remove_dir_all);
