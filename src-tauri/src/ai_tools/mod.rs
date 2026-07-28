@@ -304,7 +304,7 @@ static AI_TOOLS: &[AiToolMetadata] = &[
         id: "amp",
         name: "Amp",
         description: "Sourcegraph's agentic coding tool for the terminal",
-        docs_url: "https://ampcode.com/",
+        docs_url: "https://ampcode.com/manual",
         commands: &["amp"],
         version_args: &["--version"],
         version_regex: Some(r"(\d+\.\d+\.\d+(?:[-+][0-9A-Za-z\.-]+)?)"),

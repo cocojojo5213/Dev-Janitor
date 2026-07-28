@@ -20,7 +20,7 @@
     { "id": "copilot", "docsUrl": "https://github.com/github/copilot-cli", "registry": { "type": "npm", "name": "@github/copilot" } },
     { "id": "qwen", "docsUrl": "https://github.com/QwenLM/qwen-code", "registry": { "type": "npm", "name": "@qwen-code/qwen-code" } },
     { "id": "cline", "docsUrl": "https://cline.bot", "registry": { "type": "npm", "name": "cline" } },
-    { "id": "amp", "docsUrl": "https://ampcode.com/" },
+    { "id": "amp", "docsUrl": "https://ampcode.com/manual" },
     { "id": "crush", "docsUrl": "https://charm.sh/crush", "registry": { "type": "npm", "name": "@charmland/crush" } },
     { "id": "droid", "docsUrl": "https://docs.factory.ai/reference/cli-reference", "registry": { "type": "npm", "name": "droid" } },
     { "id": "vibe", "docsUrl": "https://docs.mistral.ai/vibe/code/cli/install-setup", "registry": { "type": "pypi", "name": "mistral-vibe" } },
