@@ -4,15 +4,16 @@ This document records the repository release line, GitHub tag state, and Actions
 
 ## Current Release State
 
-- Latest published release: `v2.4.3`
-- Published at: `2026-06-08T02:51:54Z`
-- Release URL: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v2.4.3
+- Latest published release: `v2.5.0`
+- Published at: `2026-07-21T08:37:12Z`
+- Release URL: https://github.com/cocojojo5213/Dev-Janitor/releases/tag/v2.5.0
 - Published asset count: 22
-- Next app version in this checkout: `2.5.0` (not yet published)
+- Current app version in this checkout: `2.5.0` (published)
 - Current toolchain baseline: Node.js 24, pnpm 11.15.1, Rust 1.97.1
 
 The repository had historical draft releases left by failed or repeated release runs. Those stale drafts were deleted on 2026-06-05. During the `v2.4.2` publish, the first tag run created an empty draft release before a Windows CI test failure was fixed; that draft was deleted before the tag was moved to the fixed commit and the final release was published.
 The `v2.4.3` publish completed successfully on the first tag run after hardening cache cleanup target validation.
+The `v2.5.0` publish completed successfully on the first tag run after the CI, updater, AI CLI catalog, dependency, and runtime responsiveness refresh. The published release contains 22 assets, including `latest.json`.
 
 ## Version Tags
 
@@ -20,6 +21,7 @@ Recent v2 tags from the local repository after `git fetch --all --tags --prune`:
 
 | Tag | Date | Commit | Subject |
 | --- | --- | --- | --- |
+| `v2.5.0` | 2026-07-21 | `2febb53` | Dev Janitor v2.5.0 |
 | `v2.4.3` | 2026-06-08 | `c8a2983` | fix: harden cache cleanup targets |
 | `v2.4.2` | 2026-06-06 | `2b9685e` | fix: make AI cleanup tests portable on Windows |
 | `v2.4.1` | 2026-06-02 | `ddfa6b1` | Dev Janitor v2.4.1 |
@@ -61,10 +63,12 @@ gh release list --limit 50
 
 ## Recent GitHub Actions History
 
-Recent workflow runs reviewed on 2026-06-08:
+Recent workflow runs reviewed on 2026-07-28:
 
 | Run | Created | Workflow | Result | Branch/tag | Commit | Title |
 | --- | --- | --- | --- | --- | --- | --- |
+| `29814378880` | 2026-07-21T08:27:48Z | Release | success | `v2.5.0` | `2febb53` | Dev Janitor v2.5.0 |
+| `29814352315` | 2026-07-21T08:27:23Z | CI | success | `main` | `2febb53` | Dev Janitor v2.5.0 |
 | `27112913909` | 2026-06-08T02:39:04Z | Release | success | `v2.4.3` | `c8a2983` | fix: harden cache cleanup targets |
 | `27112906682` | 2026-06-08T02:38:47Z | CI | success | `main` | `c8a2983` | fix: harden cache cleanup targets |
 | `27062356326` | 2026-06-06T12:30:50Z | CI | success | `main` | `5c5eaff` | tools: validate release artifacts |
@@ -175,6 +179,16 @@ PY
 unzip -l "$artifact_dir/Dev-Janitor_2.4.3_x64_portable.zip"
 dpkg-deb -I "$artifact_dir/"*.deb
 ```
+
+## v2.5.0 Artifact Validation
+
+GitHub release metadata was rechecked on 2026-07-28:
+
+- Confirmed Release workflow run `29814378880` completed successfully for tag `v2.5.0`, including preflight, release creation, four platform build jobs, and publication.
+- Confirmed CI workflow run `29814352315` completed successfully for `main` at `2febb53`.
+- Confirmed the release was published at `2026-07-21T08:37:12Z`, is not a draft or prerelease, and has 22 assets.
+- Confirmed `latest.json`, Windows installers and portable ZIP, macOS DMGs and app archives, Linux AppImage, Debian and RPM packages, and updater signatures are present.
+- This metadata refresh did not repeat the full local archive, package-format, or checksum inspection documented for earlier releases.
 
 ## v2.4.3 Artifact Validation
 
